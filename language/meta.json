@@ -1,0 +1,10 @@
+{
+  "pages": [
+    "types",
+    "control-flow",
+    "OOP",
+    "functions",
+    "modules",
+    "builtins"
+  ]
+}
