@@ -1,0 +1,8 @@
+{
+  "pages": [
+    "Objects.mdx",
+    "Object-Instantiation.mdx",
+    "Object-Inheritance.mdx",
+    "Template Classes.mdx"
+  ]
+}

@@ -13,6 +13,8 @@
     "--- Recipes ---",
     "...recipes",
     "--- Standard Library ---",
-    "...std"
+    "...std",
+    "--- Help ---",
+    "...help"
   ]
 }
