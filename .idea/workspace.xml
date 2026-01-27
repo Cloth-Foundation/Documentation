@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="0ebe8fab-4091-4d17-86ab-0c9d277abd94" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Documentation.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/c.list" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/redirection-rules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Any.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Floating-Point.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Getting-Started.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Installation.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Signed-Integers.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Unsigned-Integers.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Welcome.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/topics/Your-First-Program.md" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/v.list" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Writerside/writerside.cfg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/getting-started/Hello World.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/getting-started/Hello-World.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/getting-started/Installation.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/getting-started/meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/help/RFC-Process.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/index.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/introduction/Quick Start.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/introduction/Quick-Start.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/introduction/What Is Cloth.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/introduction/What-Is-Cloth.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/introduction/meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/OOP/classes/Object-Inheritance.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/OOP/classes/Object-Instantiation.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/OOP/classes/Objects.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/OOP/classes/Template-Classes.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/OOP/classes/meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/control-flow/If Statements.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/control-flow/If-Statements.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/control-flow/Loops.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/control-flow/Ternary Operands.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/control-flow/Ternary-Operands.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Arrays.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Bits.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Booleans.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Bytes.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Characters.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Double Precision Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Double-Precision-Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Floating Point Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Floating-Point-Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Signed Integer Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Signed-Integer-Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Strings.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Unsigned Integer Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/language/types/Unsigned-Integer-Types.mdx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/meta.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/std/numbers/integers/BigInt.mdx" beforeDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="EmbeddingIndexingInfo">
+    <option name="cachedIndexableFilesCount" value="22" />
+    <option name="fileBasedEmbeddingIndicesEnabled" value="true" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;SuperScary&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Cloth-Foundation/Documentation.git&quot;,
+    &quot;accountId&quot;: &quot;6c75fd7c-6103-42a6-89d3-f824f85b3766&quot;
+  }
+}</component>
+  <component name="InstanceColorv3">
+    <option name="map">
+      <map>
+        <entry key="$PROJECT_DIR$/Writerside/cd.tree">
+          <value>
+            <ColorState>
+              <option name="customOrder" value="2" />
+              <option name="first">
+                <RgbState>
+                  <option name="blue" value="225" />
+                  <option name="darkBlue" value="225" />
+                  <option name="darkGreen" value="149" />
+                  <option name="darkRed" value="56" />
+                  <option name="green" value="149" />
+                  <option name="red" value="56" />
+                </RgbState>
+              </option>
+              <option name="second">
+                <RgbState>
+                  <option name="blue" value="234" />
+                  <option name="darkBlue" value="234" />
+                  <option name="darkGreen" value="197" />
+                  <option name="darkRed" value="81" />
+                  <option name="green" value="197" />
+                  <option name="red" value="81" />
+                </RgbState>
+              </option>
+            </ColorState>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/Writerside/hi.tree">
+          <value>
+            <ColorState>
+              <option name="customOrder" value="1" />
+              <option name="first">
+                <RgbState>
+                  <option name="blue" value="60" />
+                  <option name="darkBlue" value="60" />
+                  <option name="darkGreen" value="68" />
+                  <option name="darkRed" value="206" />
+                  <option name="green" value="68" />
+                  <option name="red" value="206" />
+                </RgbState>
+              </option>
+              <option name="second">
+                <RgbState>
+                  <option name="blue" value="65" />
+                  <option name="darkBlue" value="65" />
+                  <option name="darkGreen" value="126" />
+                  <option name="darkRed" value="231" />
+                  <option name="green" value="126" />
+                  <option name="red" value="231" />
+                </RgbState>
+              </option>
+            </ColorState>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="McpProjectServerCommands">
+    <commands />
+    <urls />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 7
+}</component>
+  <component name="ProjectId" id="38p3rDrRfTGgJEcEITTQ14lLyl3" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.MCP Project settings loaded": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "kotlin-language-version-configured": "true",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecapSpentCounter">
+    <option name="endsOfQuotaMs" value="1770429619481" />
+    <option name="spentUsd" value="0.065164745" />
+  </component>
+  <component name="RecapUselessUpdatesCounter">
+    <option name="suspendCountdown" value="7" />
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-30f59d01ecdd-2fc7cc6b9a17-intellij.indexing.shared.core-IU-253.30387.90" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="0ebe8fab-4091-4d17-86ab-0c9d277abd94" name="Changes" comment="" />
+      <created>1769482883340</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1769482883340</updated>
+    </task>
+    <servers />
+  </component>
+</project>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="cd"
+                 name="Cloth Docs"
+                 start-page="Welcome.md">
+
+    <toc-element topic="Welcome.md"/>
+    <toc-element toc-title="Getting Started">
+        <toc-element topic="Getting-Started.md"/>
+        <toc-element topic="Installation.md" />
+        <toc-element topic="Your-First-Program.md" />
+    </toc-element>
+    <toc-element toc-title="Definitions">
+        <toc-element toc-title="Primitives">
+            <toc-element topic="Any.md"/>
+        </toc-element>
+        <toc-element toc-title="Numbers">
+            <toc-element topic="Signed-Integers.md" />
+            <toc-element topic="Unsigned-Integers.md" />
+            <toc-element topic="Floating-Point.md" />
+        </toc-element>
+
+        <toc-element toc-title="Metadata Accessors">
+
+        </toc-element>
+    </toc-element>
+</instance-profile>

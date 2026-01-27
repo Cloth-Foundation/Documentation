@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE rules SYSTEM "https://resources.jetbrains.com/writerside/1.0/redirection-rules.dtd">
+<rules>
+    <!-- format is as follows
+    <rule id="<unique id>">
+        <accepts>page.html</accepts>
+    </rule>
+    -->
+    <rule id="2e8b1be2">
+        <description>Created after removal of "This is the first topic" from Cloth Docs</description>
+        <accepts>Default-topic.html</accepts>
+    </rule>
+    <rule id="692f749a">
+        <description>Created after removal of "This is the first topic" from Cloth Docs</description>
+        <accepts>Default-topic.html</accepts>
+    </rule>
+</rules>
