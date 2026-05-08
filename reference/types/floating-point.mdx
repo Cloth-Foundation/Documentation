@@ -1,0 +1,64 @@
+# Floating-Point
+
+Cloth provides two binary floating-point types, `f32` and `f64`, conforming to the IEEE 754 single- and double-precision formats.
+
+## Types
+
+| Type | Format         | Bits | Sign | Exponent | Mantissa |
+|------|----------------|-----:|-----:|---------:|---------:|
+| `f32` | IEEE 754 binary32 | 32 | 1 | 8  | 23 |
+| `f64` | IEEE 754 binary64 | 64 | 1 | 11 | 52 |
+
+## Approximate ranges
+
+| Type | Smallest positive normal | Largest finite | Decimal precision |
+|------|--------------------------|----------------|-------------------|
+| `f32` | ≈ 1.175 × 10⁻³⁸          | ≈ 3.403 × 10³⁸  | ≈ 7 digits  |
+| `f64` | ≈ 2.225 × 10⁻³⁰⁸         | ≈ 1.798 × 10³⁰⁸ | ≈ 15 digits |
+
+## Aliases
+
+The following names are aliases for the IEEE 754 floating-point types.
+
+| Alias    | Notes |
+|----------|-------|
+| `float`  | Single-precision floating-point. |
+| `double` | Double-precision floating-point. |
+| `real`   | A real-number floating-point type. |
+
+## Literals
+
+Floating-point literals contain a decimal point or exponent and have type `f64` by default.
+
+```cloth
+let pi = 3.14159;
+let g  = 9.8;
+```
+
+The keyword `NaN` is the IEEE 754 not-a-number value. It is a legal expression of floating-point type and can appear in any position where a floating-point literal is permitted.
+
+```cloth
+let invalid = NaN;
+```
+
+## Special values
+
+`f32` and `f64` follow the IEEE 754 model and include three categories of special values:
+
+- **Signed zero** — `+0.0` and `-0.0` are distinct bit patterns but compare equal under `==`.
+- **Infinities** — produced by overflow and by exact arithmetic such as `1.0 / 0.0`.
+- **`NaN`** — produced by undefined operations such as `0.0 / 0.0` or `sqrt` of a negative number. `NaN` is unequal to every value, including itself; comparisons against `NaN` always evaluate to `false` except for `!=`, which is `true`.
+
+## Arithmetic
+
+The arithmetic operators (`+`, `-`, `*`, `/`, `%`) and comparison operators (`==`, `!=`, `<`, `<=`, `>`, `>=`) are defined on floating-point types. Bitwise operators are not defined on floating-point types.
+
+## I/O
+
+The standard library provides a `println` overload for `f64`:
+
+```cloth
+import cloth.io.Out::{ println };
+
+println(3.14);
+```

@@ -1,0 +1,70 @@
+# Modules and Imports
+
+Every Cloth source file belongs to exactly one module. Modules form a hierarchical namespace; identifiers from one module are made visible in another with an import.
+
+## Module declarations
+
+The first statement in every `.co` file is a module declaration:
+
+```cloth
+module hello.foo;
+```
+
+The module path is a dot-separated list of segments. It must match the directory structure of the file relative to the project's source root. A file at `src/hello/foo/Foo.co` declares `module hello.foo;`. Moving the file requires updating the declaration.
+
+A module declaration ends with a semicolon. A file may not contain more than one module declaration, and no other statement may precede it.
+
+The module path does not have to match the file name; it identifies the *directory* that contains the file. The class defined in the file is independently named.
+
+## Imports
+
+After the module declaration, any number of import declarations may appear. An import brings names from another module into the current file's scope.
+
+There are three import forms.
+
+### Module import
+
+A module import names a single class or other top-level identifier and brings only that name into scope:
+
+```cloth
+import cloth.io.stream.OutputStream;
+```
+
+Inside the file, `OutputStream` refers to the imported class. Static members are then accessed through the class name (`OutputStream.$puts(...)`).
+
+### Selective import
+
+A selective import names individual members of a module and brings each of them into scope as a top-level name:
+
+```cloth
+import cloth.io.Out::{ println };
+```
+
+After this import, `println` may be called directly without a qualifier. Multiple names may be selected at once, separated by commas:
+
+```cloth
+import cloth.io.Out::{ println, print };
+```
+
+### Wildcard import
+
+A wildcard import brings every public top-level name from a module into scope:
+
+```cloth
+import cloth.lang.*;
+```
+
+Wildcard imports are convenient but obscure where each name comes from. Prefer module or selective imports when readability matters.
+
+## Resolution order
+
+Inside a file, imports are processed top to bottom. If two imports introduce the same name, the later one shadows the earlier one. A name introduced by an import shadows nothing in the current module's own declarations — local declarations always take precedence.
+
+## Style
+
+By convention:
+
+- The module declaration is the first non-comment line of the file.
+- Imports follow the module declaration with no blank line between them.
+- A blank line separates the import block from the file's class declaration.
+- Imports are grouped by source module (standard library imports first, then project imports), with no blank lines inside a group.

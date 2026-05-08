@@ -1,0 +1,160 @@
+# Control Flow
+
+Cloth's control-flow constructs are conventional. Conditions, loops, switches, and early-exit statements all use C-style syntax with a few additions: range-based iteration through `for`-`in`, the `guard` statement for defensive checks, and the `defer` statement for scheduled cleanup.
+
+## `if` / `else`
+
+An `if` statement evaluates a `bool` condition and chooses one of two branches:
+
+```cloth
+if (true) {
+    println("Hello World");
+} else {
+    println("I am Cloth!");
+}
+```
+
+The condition must be parenthesized. Both branches are blocks delimited by braces. Chained alternatives are written with `else if`:
+
+```cloth
+if (count == 0) {
+    ...
+} else if (count == 1) {
+    ...
+} else {
+    ...
+}
+```
+
+## `switch`
+
+A `switch` statement chooses among several alternatives based on the value of an expression:
+
+```
+switch (expr) {
+    case pattern1: ...
+    case pattern2: ...
+    default: ...
+}
+```
+
+Each `case` matches one pattern. The `default` arm runs if no case matches. Within a case body, ordinary statements are legal, including the loop-control statements described below.
+
+## Loops
+
+### `while`
+
+A `while` loop evaluates its condition before each iteration and runs the body while the condition is true:
+
+```
+while (condition) {
+    ...
+}
+```
+
+If the condition is `false` on entry, the body never runs.
+
+### `do`-`while`
+
+A `do`-`while` loop runs the body once before evaluating the condition:
+
+```
+do {
+    ...
+} while (condition);
+```
+
+The body always runs at least once. The trailing `while` ends with a semicolon.
+
+### `for` (C-style)
+
+A C-style `for` loop has three parts: an initializer, a condition, and an iterator step. Each runs at the position implied by its name:
+
+```
+for (init; condition; iterator) {
+    ...
+}
+```
+
+Any of the three parts may be omitted.
+
+### `for`-`in`
+
+A `for`-`in` loop iterates over the elements of an iterable value. Each iteration binds the next element to the loop variable:
+
+```
+for (TypeName name in iterable) {
+    ...
+}
+```
+
+The loop variable's type is declared inline. Inside the body, the variable holds the current element.
+
+## Loop control
+
+Two statements influence the surrounding loop:
+
+- **`break`** — terminates the innermost enclosing loop or `switch` and resumes execution at the statement after it.
+- **`continue`** — skips the rest of the current iteration and continues with the next iteration's condition or iterator step.
+
+Both statements end with a semicolon.
+
+## `return`
+
+A `return` statement exits the current function. If the function's return type is `void`, no value follows the keyword:
+
+```cloth
+return;
+```
+
+Otherwise, an expression provides the function's result:
+
+```cloth
+return v + other.get();
+```
+
+The expression must produce a value of the function's declared return type.
+
+## `throw`
+
+A `throw` statement raises an error. The thrown value's type must match one of the types listed in the enclosing function's `maybe` clause:
+
+```
+throw new ParseError("unexpected token");
+```
+
+`throw` does not return; control transfers to the nearest matching handler in the call stack. See [Memory and Errors](/docs/reference/language/memory-and-errors) for the full rules.
+
+## `guard`
+
+A `guard` statement evaluates a condition and, if the condition is false, runs an attached block that must terminate the enclosing function (typically with `return` or `throw`).
+
+```
+guard (condition) else {
+    return;
+}
+```
+
+`guard` expresses *defensive checks* — preconditions that must hold for the rest of the function to be valid. Unlike `if`, the compiler verifies that the failure block actually exits the enclosing function.
+
+## `defer`
+
+A `defer` statement schedules a block of code to run when the enclosing scope exits, regardless of how it exits:
+
+```
+defer {
+    cleanup();
+}
+```
+
+Multiple `defer` blocks in the same scope run in reverse declaration order — the most recently deferred block runs first. `defer` is the right tool for releasing resources whose lifetime is tied to a particular scope, since it ensures the cleanup runs along normal exits, early returns, and thrown errors alike.
+
+## Expression statements
+
+Any expression followed by a semicolon is a statement. Function calls in particular are usually used this way:
+
+```cloth
+println("Hello World");
+```
+
+When an expression's value is meant to be discarded, the compiler accepts it without complaint. Expression statements are the bridge between Cloth's expression-oriented mathematical operators and its statement-oriented control flow.

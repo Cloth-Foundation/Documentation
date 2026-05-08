@@ -1,0 +1,65 @@
+# String
+
+`string` is the built-in type for textual values. It is a reference type whose lifetime is managed by the runtime under Cloth's hierarchical ownership model.
+
+## Literals
+
+String literals are written in double quotes:
+
+```cloth
+let greeting = "Hello, World!";
+```
+
+A string literal has type `string`. There is no distinct character-array type for source-level string data — every literal is a `string`.
+
+## Concatenation
+
+Strings can be concatenated with the `+` operator. The result is a new `string` whose contents are the left operand followed by the right operand.
+
+The standard library exposes the same operation as a static function on `cloth.lang.String`:
+
+```cloth
+import cloth.lang.String;
+
+let full = String.concat("Hello, ", "World!");
+```
+
+`String.concat` is the lower-level form. Its implementation uses `strlen`, `calloc`, and `strcat` from the C runtime through the `@Extern` mechanism described in [Annotations](/docs/reference/language/annotations).
+
+## Output
+
+`cloth.io.Out` provides a `println` overload for `string`:
+
+```cloth
+import cloth.io.Out::{ println };
+
+println("Hello, World!");
+```
+
+A `println()` call with no arguments prints an empty line.
+
+## Nullable strings
+
+A `string` value is non-null by default. To allow `null`, write the type as `string!`:
+
+```cloth
+public class (string! message) {
+    public const string! message { public getter; };
+}
+```
+
+The `!` suffix marks the type as nullable. See [Nullable Types](/docs/reference/types/nullable) for the full rules.
+
+## Comparison
+
+The equality operators `==` and `!=` are defined on `string` values and compare the textual content of the two operands.
+
+## Use in declarations
+
+`string` may appear wherever any other type may appear: in fields, parameters, variable bindings, and return types.
+
+```cloth
+public func greet(string name): string {
+    return "Hello, " + name;
+}
+```

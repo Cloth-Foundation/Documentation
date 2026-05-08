@@ -1,0 +1,21 @@
+# Reference
+
+The reference describes the Cloth language as it currently exists. It is organized into two top-level sections.
+
+## [Types](/docs/reference/types)
+
+The built-in type system of Cloth. Each page in this section describes a category of types: their bit widths, value ranges, semantics, and how they are written in source. Includes integer and floating-point types, booleans, characters and bytes, strings, arrays and tuples, nullables, generics, and the special `any` and `void` types.
+
+## [Language](/docs/reference/language)
+
+The syntactic and semantic constructs of the language: how modules are declared and imported, how classes and structs are defined, how functions and fragments work, how control flow is expressed, the operator set, the memory model, error handling, and annotations.
+
+## Type expressions
+
+Many pages in both sections refer to a *type expression*. A type expression is the syntactic form used wherever a type is written — in field declarations, parameter lists, return types, and cast targets. Internally it consists of three parts:
+
+- A **base type** — a named type, a generic instantiation, an array type, a tuple type, `void`, or `any`.
+- An optional **nullability** marker — the `!` suffix, indicating the value may be `null`.
+- An optional **ownership modifier** — `Transfer` (move) or `MutBorrow` (mutable borrow).
+
+These three components compose to form every type written in Cloth source. The pages in this reference describe each of them.

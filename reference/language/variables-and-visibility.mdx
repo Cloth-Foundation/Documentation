@@ -1,0 +1,96 @@
+# Variables and Visibility
+
+Variables hold values during the execution of a method or constructor. Visibility modifiers control where declarations can be referenced from. Both apply uniformly across the language.
+
+## Variable bindings
+
+A *variable binding* introduces a new name and gives it a value. There are two binding forms.
+
+### `let`
+
+A `let` binding declares an immutable name. Its type is inferred from the initializer, and once bound, the name cannot be reassigned.
+
+```cloth
+let x = 1;
+let frag = run();
+```
+
+`let` is the most common binding form. It expresses *this name refers to this value*, with no implication of variable identity.
+
+### Explicit-typed declarations
+
+A binding may also be declared with an explicit type. The type appears before the name:
+
+```cloth
+i32 count = 0;
+string label = "ready";
+```
+
+Explicit-typed declarations may be reassigned. They are appropriate when the variable's value will change over the course of a method.
+
+## Constants
+
+The `const` modifier marks a declaration as a compile-time constant. A `const` field's value is fixed for the lifetime of the object, and a `const` value at file or class scope is fixed for the lifetime of the program.
+
+```cloth
+public const string! message { public getter; };
+```
+
+`const` is enforced statically. Reassigning a `const` binding is a compile-time error.
+
+## Assignment
+
+An ordinary assignment uses the `=` operator:
+
+```cloth
+v = 1;
+this.message = message;
+```
+
+The compound-assignment operators (`+=`, `-=`, `*=`, `/=`, `%=`, `&=`, `|=`, `^=`) combine an arithmetic or bitwise operation with assignment. `a += b` is equivalent to `a = a + b`, applied to the same target — see [Operators](/docs/reference/language/operators) for the full list.
+
+## Field modifiers
+
+Field declarations may carry the following modifiers:
+
+| Modifier | Meaning |
+|----------|---------|
+| `const`  | The field's value cannot change after construction. |
+| `static` | The field belongs to the class, not to instances. |
+| `atomic` | All reads and writes of the field are atomic. |
+
+## Visibility
+
+Three visibility modifiers control where a declaration can be referenced from.
+
+### `public`
+
+A `public` declaration is visible everywhere. Other modules may import it (subject to module-level visibility) and use it freely.
+
+```cloth
+public class () {
+    public func get(): i32 { ... }
+}
+```
+
+### `private`
+
+A `private` declaration is visible only inside the declaring class. No code outside the class — not even another class in the same module — may reference a private member.
+
+```cloth
+private i32 v;
+```
+
+### `internal`
+
+An `internal` declaration is visible inside its declaring module. Other classes in the same module may reference it, but code in other modules may not.
+
+`internal` is the right choice for helpers that are shared across a module's classes but should not become part of the module's exported surface.
+
+## Default visibility
+
+When no visibility is specified, a declaration takes a sensible default for its position. As a matter of style, every declaration this documentation describes uses an explicit visibility — code in this language reads more clearly when each member states whom it is for.
+
+## Scope
+
+Inside a method or constructor, a binding is visible from the point of its declaration to the end of the enclosing block. Inner blocks may shadow names from outer blocks; the outer name becomes visible again when the inner block ends.

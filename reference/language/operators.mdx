@@ -1,0 +1,194 @@
+# Operators
+
+This page lists every operator the lexer recognizes and describes its meaning. Operators are grouped by category. Where an operator's behavior is described in detail elsewhere — for example, in the type-system pages — the relevant link is given.
+
+## Arithmetic
+
+| Operator | Position | Meaning | Operand types |
+|----------|----------|---------|---------------|
+| `+`  | binary | Addition. For strings, concatenation. | numeric, `string` |
+| `-`  | binary | Subtraction. | numeric |
+| `-`  | unary  | Negation. | numeric |
+| `*`  | binary | Multiplication. | numeric |
+| `/`  | binary | Division. | numeric |
+| `%`  | binary | Remainder of division. | numeric |
+| `++` | prefix or postfix | Increment by one. | numeric |
+| `--` | prefix or postfix | Decrement by one. | numeric |
+
+Prefix `++a` increments and yields the new value. Postfix `a++` increments and yields the previous value. The same applies to `--`.
+
+## Compound assignment
+
+Each compound-assignment operator combines an arithmetic or bitwise operation with `=`. `a OP= b` modifies `a` in place; the target must be assignable.
+
+| Operator | Equivalent to |
+|----------|---------------|
+| `+=`     | `a = a + b`  |
+| `-=`     | `a = a - b`  |
+| `*=`     | `a = a * b`  |
+| `/=`     | `a = a / b`  |
+| `%=`     | `a = a % b`  |
+| `&=`     | `a = a & b`  |
+| `|=`     | `a = a \| b` |
+| `^=`     | `a = a ^ b`  |
+
+## Comparison
+
+| Operator | Meaning |
+|----------|---------|
+| `==` | Equal. |
+| `!=` | Not equal. |
+| `<`  | Less than. |
+| `<=` | Less than or equal. |
+| `>`  | Greater than. |
+| `>=` | Greater than or equal. |
+
+Each comparison produces a `bool`. Operands must have matching types.
+
+## Logical
+
+| Operator | Meaning |
+|----------|---------|
+| `and` | Logical AND of two `bool` values. |
+| `or`  | Logical OR of two `bool` values. |
+| `!`   | Logical negation of a `bool`. |
+
+`and` and `or` are keywords, not symbols. Both short-circuit — the right operand is evaluated only when the left operand does not determine the result.
+
+## Bitwise
+
+| Operator | Meaning | Operand types |
+|----------|---------|---------------|
+| `&`  | Bitwise AND. | integer |
+| `|`  | Bitwise OR. | integer |
+| `^`  | Bitwise XOR. | integer |
+| `~`  | Bitwise NOT (one's complement). | integer |
+| `<<` | Left shift. | integer |
+| `>>` | Right shift. | integer |
+
+The bitwise operators are defined on integer types only. Their compound forms (`&=`, `|=`, `^=`) appear in the [Compound assignment](#compound-assignment) table.
+
+## Assignment
+
+| Operator | Meaning |
+|----------|---------|
+| `=` | Plain assignment. The target's previous value is replaced. |
+
+The compound forms appear in the [Compound assignment](#compound-assignment) table.
+
+## Type query
+
+| Operator | Meaning |
+|----------|---------|
+| `is` | Tests whether a value's runtime type is (a subtype of) the named type. Result is `bool`. |
+| `as` | Casts a value to the named type. The cast is checked at runtime. |
+| `in` | Tests whether a value is a member of a collection. Result is `bool`. |
+
+These three operators all take a value on the left and a type or collection on the right. They are written infix with the keyword between the operands:
+
+```
+value is i32
+value as string
+key   in map
+```
+
+## Member access
+
+| Operator | Meaning |
+|----------|---------|
+| `.`  | Member access. `target.member` selects a field, method, or other member from a value. |
+| `::` | Used in two roles: (1) selective import lists, e.g. `cloth.io.Out::{ println }`, and (2) meta-access, e.g. `i32::MAX` or `s::LENGTH`. |
+
+## Meta-access
+
+The `::` operator on the right-hand side of a type or value, followed by an uppercase metakeyword, queries a compile-time property of the operand. The result is a constant — the compiler resolves it during compilation.
+
+```cloth
+let max = i32::MAX;          // largest representable i32
+let len = "Hello"::LENGTH;   // 5
+
+let s = "Hello";
+let n = s::LENGTH;           // 5
+```
+
+The operand may be either a *type* (`i32::MAX`, `f64::SIZE`) or a *value* (`s::LENGTH`, `pair::SIZE`). When the operand is a value, the metakeyword resolves against the value's type and, where relevant, against the value itself.
+
+The full set of metakeywords:
+
+| Metakeyword | Queries |
+|-------------|---------|
+| `MAX`       | The maximum representable value of a numeric type. |
+| `MIN`       | The minimum representable value of a numeric type. |
+| `SIZE`      | The size, in bytes, of the operand. |
+| `ALIGN`     | The alignment, in bytes, of the operand. |
+| `BITS`      | The bit width of the operand. |
+| `BYTES`     | The byte width of the operand. |
+| `LENGTH`    | The length of an array, string, or other sequence. |
+| `DEFAULT`   | The default value of the operand's type. |
+| `TYPE`      | The type of the operand, as a value. |
+| `STRING`    | The textual name of the operand's type, as a `string`. |
+| `MEMSPACE`  | The memory space (root, stack, heap, etc.) where the operand lives. |
+
+Metakeyword spellings are uppercase exactly as listed above. Lower-case forms are not legal.
+
+## Range and spread
+
+| Operator | Meaning |
+|----------|---------|
+| `..`  | Constructs a range from one value to another. |
+| `...` | Spread. Expands a sequence into individual arguments or elements. |
+
+## Null handling
+
+| Operator | Meaning |
+|----------|---------|
+| `??` | Fallback. `a ?? b` evaluates to `a` if `a` is non-null, otherwise to `b`. |
+
+See [Nullable Types](/docs/reference/types/nullable) for the full nullability rules.
+
+## Conditional
+
+| Form | Meaning |
+|------|---------|
+| `cond ? a : b` | Conditional expression. Evaluates to `a` if `cond` is `true`, otherwise to `b`. |
+
+The conditional expression is right-associative and may be chained.
+
+## Indexing and call
+
+| Operator | Meaning |
+|----------|---------|
+| `[]` | Indexing. `target[i]` selects the element at position `i`. |
+| `()` | Call. `f(args)` invokes `f` with the given arguments. |
+
+These two are technically not separate operators but parts of the postfix-expression grammar; they appear here because they are the two ways an expression accesses a value through another expression.
+
+## Arrows
+
+Three arrow forms appear in declarations and expressions:
+
+| Form | Where used |
+|------|------------|
+| `->` | Implements list (after `class` or `struct`) and as an alternative function-return arrow. |
+| `:>` | Named return arrow used in some declaration forms. |
+| `=>` | Lambda body arrow, separating a lambda's parameters from its body. |
+
+The exact contexts in which each arrow is legal are described on the relevant declaration pages.
+
+## Special characters
+
+The lexer also recognizes the following single characters in dedicated roles. Most appear inside other constructs rather than as stand-alone operators.
+
+| Character | Use |
+|-----------|-----|
+| `,`       | Separates list elements. |
+| `;`       | Terminates a statement. |
+| `:`       | Separates a parameter from its type, a function from its return type, or a key from a value. |
+| `(` `)`   | Delimits parameter lists, argument lists, and parenthesized expressions. |
+| `{` `}`   | Delimits blocks and class bodies. |
+| `[` `]`   | Delimits index expressions and array forms. |
+| `@`       | Prefix for annotations such as `@Extern`, `@Override`, `@Implementation`, and `@Deprecated`. |
+| `#`       | Reserved. |
+| `$`       | Prefix used for foreign-function bindings. |
+| `?`       | Used in the conditional expression `? :`. |
+| `` ` ``   | Reserved for future use. |

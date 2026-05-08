@@ -1,0 +1,57 @@
+# Arrays and Tuples
+
+Cloth provides two structural types for grouping values: arrays for homogeneous sequences and tuples for fixed-length heterogeneous groups.
+
+## Arrays
+
+An *array* is a homogeneous, ordered sequence of values. Every element has the same type, called the *element type*. The element type is part of the array's type — an array of `i32` is a different type from an array of `string`.
+
+Array types appear wherever any other type may appear. They form a category of their own in Cloth's type system, alongside named, generic, tuple, void, and any types.
+
+### Indexing
+
+Array elements are accessed by index using the `[]` operator. Indexing produces a value of the element type.
+
+```cloth
+let first = items[0];
+```
+
+The index expression is an integer.
+
+### Spread
+
+The spread operator `...` expands an array into its constituent elements. It is used in contexts that accept a variable number of arguments.
+
+## Tuples
+
+A *tuple* is a fixed-length, ordered group of values. Each position has its own type, and the tuple's type is the ordered list of those component types. Two tuple types are equal only if they have the same number of components and the same type at each position.
+
+### Construction
+
+A tuple expression lists its elements separated by commas:
+
+```cloth
+let pair = (1, "one");
+```
+
+The type of `pair` is a tuple of `i32` and `string`.
+
+### Destructuring
+
+Tuple values can be destructured into named bindings. The destructuring statement binds each tuple component to a separate name.
+
+```cloth
+let (n, label) = pair;
+```
+
+After this statement, `n` holds the first component and `label` holds the second.
+
+## Differences
+
+Arrays and tuples differ in three ways:
+
+- **Length.** An array's length is part of its representation. A tuple's length is part of its type.
+- **Element types.** Every element of an array shares one type. A tuple may have a different type at every position.
+- **Access.** Array elements are addressed by an integer index at runtime. Tuple elements are addressed by position at compile time, typically through destructuring.
+
+Use an array when you need a sequence of like values whose length may vary at runtime. Use a tuple when you need to bundle a small, fixed set of values whose positions and types are known at compile time.

@@ -1,0 +1,128 @@
+# Memory and Errors
+
+Cloth manages memory through a hierarchical ownership tree with deterministic destruction. There is no garbage collector. Errors are reported by an explicit, type-checked mechanism — the `maybe` clause and the `throw` statement — that is enforced at compile time.
+
+This page covers both topics. They are paired because Cloth's error-handling primitives interact with object lifetimes: a thrown error unwinds scopes, which destroys local objects, which runs deferred actions.
+
+## The ownership tree
+
+Every live object in a Cloth program belongs to exactly one *owner*. Owners form a tree rooted at program entry. When an owner is destroyed, all of the objects it transitively owns are destroyed in a deterministic order before its own destructor runs.
+
+This model has several practical consequences:
+
+- Object lifetimes are predictable. Every destructor runs at a known point.
+- Memory does not leak unless the program explicitly leaks it.
+- There is no runtime collector, so program execution does not pause for collection.
+- Static data — values that exist for the entire run of the program — lives in a separate root-lifetime domain outside the ownership tree.
+
+## `new`
+
+The `new` expression allocates a new object and runs a constructor on it:
+
+```cloth
+return new Foo(v);
+```
+
+The expression's value is the newly created object. By default, the new object becomes owned by the binding or position that receives it.
+
+## `delete`
+
+The `delete` statement explicitly destroys an object before its scope would otherwise end:
+
+```
+delete obj;
+```
+
+`delete` runs the object's destructor and frees its storage. After `delete`, the binding may not be used again. Most code does not need `delete`; deterministic destruction at scope exit covers the common case.
+
+## Ownership modifiers
+
+A type expression may carry an ownership modifier that governs how a value is passed and stored. Two modifiers are defined.
+
+| Modifier | Meaning |
+|----------|---------|
+| `Transfer`   | Move semantics. The value's ownership transfers from the source to the destination. The source binding is no longer valid afterward. |
+| `MutBorrow`  | Mutable borrow. The destination receives a non-owning reference to the value, with the right to modify it. The source remains the owner. |
+
+Ownership modifiers attach to type expressions and are checked statically. The compiler refuses programs that would violate the ownership tree — for example, storing a `MutBorrow` reference somewhere it could outlive the borrowed object.
+
+## Deterministic destruction
+
+When a scope exits — whether through normal flow, a `return`, a `throw`, or a `break` — every object owned by that scope is destroyed in reverse declaration order. Each destructor runs to completion before the next one starts.
+
+`defer` blocks run in the same wind-down. They are scheduled in declaration order, so the most recently deferred action runs first. Destructor calls and `defer` blocks compose: the runtime simply runs whatever cleanup the scope has accumulated, in last-in-first-out order.
+
+This is the mechanism that makes resources like file handles, locks, and allocations safe to release: declare them, register the cleanup, and the runtime runs the cleanup at every exit point automatically.
+
+## Error handling
+
+Cloth's error model is built around one rule: a function declares which errors it can produce, and callers must account for them.
+
+### The `maybe` clause
+
+A function's signature lists the error types it can produce in a `maybe` clause. The clause follows the return type:
+
+```
+public func parse(string input): i32 maybe ParseError, OverflowError
+```
+
+A function with no `maybe` clause cannot produce errors. A function with a `maybe` clause produces errors only of the listed types — the compiler verifies this at every `throw` and at every call site.
+
+### `throw`
+
+The `throw` statement raises an error. The thrown value's type must match one of the types listed in the enclosing function's `maybe` clause:
+
+```
+throw new ParseError("unexpected token");
+```
+
+`throw` does not return. Control transfers to the nearest matching handler in the call stack. While unwinding, every scope between the throw and the handler runs its destructors and `defer` blocks in the usual order.
+
+### `guard`
+
+A `guard` statement evaluates a condition and, if the condition is false, runs a block that must terminate the enclosing function:
+
+```
+guard (input.length > 0) else {
+    throw new ParseError("empty input");
+}
+```
+
+The compiler verifies that the failure block actually exits — it must end in a `return`, `throw`, or other terminating statement. `guard` is the right tool for early-exit on a precondition.
+
+### `defer`
+
+A `defer` statement schedules cleanup to run when the enclosing scope exits, regardless of the cause:
+
+```
+defer {
+    file.close();
+}
+```
+
+Multiple `defer` blocks in the same scope run in reverse declaration order. `defer` is what makes resource ownership exception-safe: the cleanup runs whether the function returns normally or unwinds through a `throw`.
+
+### `??` fallback
+
+The fallback operator `??` is described in [Operators](/docs/reference/language/operators) and [Nullable Types](/docs/reference/types/nullable). It interacts with error handling indirectly: a function whose result is nullable may use `??` at the call site to substitute a default in place of `null`, avoiding the need to throw.
+
+## Putting it together
+
+A typical pattern: a function takes some input, validates preconditions with `guard`, allocates resources, schedules their cleanup with `defer`, and returns a result or throws an error. The runtime guarantees that every resource is released exactly once, regardless of which exit path the function takes.
+
+```
+public func process(string path): Result maybe IOError {
+    guard (path.length > 0) else {
+        throw new IOError("empty path");
+    }
+
+    let f = openFile(path);
+    defer {
+        f.close();
+    }
+
+    return f.read();
+}
+```
+
+Every successful return runs `f.close()` before returning to the caller. Every thrown error runs `f.close()` while unwinding. The two paths share the same cleanup.

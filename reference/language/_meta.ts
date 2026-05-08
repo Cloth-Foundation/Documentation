@@ -1,0 +1,12 @@
+export default {
+    index: 'Overview',
+    'modules-and-imports': 'Modules and Imports',
+    'classes-and-structs': 'Classes and Structs',
+    'interfaces-traits-enums': 'Interfaces, Traits, and Enums',
+    'functions-and-fragments': 'Functions and Fragments',
+    'variables-and-visibility': 'Variables and Visibility',
+    'control-flow': 'Control Flow',
+    operators: 'Operators',
+    'memory-and-errors': 'Memory and Errors',
+    annotations: 'Annotations',
+}

@@ -1,0 +1,42 @@
+# Installation
+
+There are two ways to obtain a working Cloth toolchain: install a pre-built compiler, or build the compiler from source.
+
+## Quick Start (Installer)
+
+Download the latest compiler installer for your operating system from the official distribution and follow the on-screen instructions. Administrator permissions may be required.
+
+After installation, verify the toolchain is on your `PATH`:
+
+```bash
+$ cloth ?
+```
+
+This prints the help screen and confirms that the `cloth` command is available.
+
+## Build From Source
+
+Building from source is supported but is not the recommended path for most users. The bootstrap compiler is written in C# and F# and targets the .NET 10 SDK; it produces Cloth IR (CIR), which is then lowered to LLVM IR and linked into a native executable.
+
+### Required third-party tools
+
+The following tools must be installed and available on your `PATH` before building Cloth from source:
+
+- **Git** — used to clone the repository and its submodules.
+- **Clang (LLVM)** — used as the backend code generator and linker. The Cloth compiler emits LLVM IR, which is then assembled and linked by Clang.
+
+### Steps
+
+1. Clone the Cloth repository.
+2. Restore the .NET solution. The repository contains three projects:
+   - `Frontend` (C#) — lexer, parser, and AST.
+   - `Compiler` (C#) — semantic analysis, Cloth IR, and LLVM emission.
+   - `Commands` (F#) — the `cloth` command-line driver.
+3. Build the solution. The output is the `cloth` executable that drives the full compilation pipeline.
+
+The compiler runs in two passes:
+
+1. **Symbol collection** — all modules in the project are merged and top-level declarations are registered.
+2. **Semantic analysis and code generation** — type checking, ownership and lifetime enforcement, IR generation, and backend emission.
+
+A successful build produces the `cloth` driver, which exposes the `build`, `run`, `new`, `lexer`, `parser`, and `help` commands.

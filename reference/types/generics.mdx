@@ -1,0 +1,51 @@
+# Generics
+
+A *generic type* is a named type parameterized by one or more type arguments. Generics let a single type or function definition operate uniformly over many element types without losing static type checking.
+
+## Generic instantiation
+
+Generic type arguments are written between angle brackets, comma-separated:
+
+```
+Name<Arg1, Arg2, ...>
+```
+
+Each `Arg` is a complete type expression — it may itself be a primitive, a named type, another generic instantiation, or any other base-type form.
+
+Examples of how a generic instantiation reads as a type expression:
+
+| Written form        | Reading |
+|---------------------|---------|
+| `List<i32>`         | A list whose elements are `i32`. |
+| `Map<string, i32>`  | A map from `string` keys to `i32` values. |
+| `List<List<bool>>`  | A list of lists of `bool`. |
+
+The number and order of arguments are fixed by the generic type's declaration. Supplying the wrong number of arguments is a compile-time error.
+
+## Where generics appear
+
+A generic instantiation is a type expression. It is legal anywhere a type can be written:
+
+- Field types
+- Parameter types
+- Return types
+- Cast targets
+- Inner positions of other type expressions (for example, the element type of an array or a tuple component)
+
+## Nullability and ownership
+
+A generic instantiation participates fully in the rest of the type expression syntax. The `!` suffix and the ownership modifiers compose with generics:
+
+```
+List<i32>!     // a nullable list of i32
+```
+
+The nullability marker applies to the outer generic type, not to its arguments. To make an argument nullable, place the `!` inside:
+
+```
+List<i32!>     // a list whose elements are nullable i32
+```
+
+## User-defined generics
+
+Type declarations may declare type parameters of their own. Inside the declaration, those parameters are referred to by name and behave as a regular named type. A user-defined generic is instantiated the same way as any built-in generic — by supplying type arguments between angle brackets.

@@ -1,0 +1,134 @@
+# Functions and Fragments
+
+Functions are the fundamental unit of executable code in Cloth. *Fragments* are a related construct: reusable blocks of code that are bound to a name and invoked like a function but do not have their own callable identity outside their declaring class.
+
+## Function declarations
+
+A function declaration starts with the keyword `func`:
+
+```
+[trait annotations]
+[visibility] [modifiers] func Name(Params) : ReturnType [maybe ErrorType, ...] {
+    ...body...
+}
+```
+
+A complete example:
+
+```cloth
+public static func println(string v) : void {
+    OutputStream.$puts(v);
+}
+```
+
+### Parameters
+
+The parameter list is enclosed in parentheses. Each parameter is a type followed by a name:
+
+```cloth
+public func combine(Foo other): i32 {
+    return v + other.get();
+}
+```
+
+A parameter may declare a default value following an `=`:
+
+```
+public func render(string text, i32 width = 80) : void
+```
+
+When a parameter has a default value, callers may omit it.
+
+### Return type
+
+The return type follows a colon. A function that returns no value uses `void`:
+
+```cloth
+public static func println() : void {
+    OutputStream.$puts("");
+}
+```
+
+A function with a non-`void` return type must reach a `return` statement on every code path.
+
+### `maybe` clause
+
+A function may declare that it can produce errors of specific types. The `maybe` clause follows the return type and lists the error types separated by commas:
+
+```
+public func parse(string input): i32 maybe ParseError, OverflowError
+```
+
+Any `throw` inside the function must produce a value whose type matches one of the listed error types. Callers must handle (or propagate) those errors. See [Memory and Errors](/docs/reference/language/memory-and-errors) for the full rules.
+
+### Modifiers
+
+Function declarations accept the following modifiers:
+
+| Modifier | Meaning |
+|----------|---------|
+| `static` | Class-level. The function does not bind `this` and is called through the class name. |
+| `const`  | The function does not modify its receiver or any reachable state. |
+| `abstract` | Declared with no body. Implementations are supplied by subclasses. |
+
+### Trait annotations
+
+Trait annotations such as `@Override`, `@Implementation`, and `@Deprecated` are written above the `func` keyword:
+
+```cloth
+@Override
+public func toString() : string {
+    return "Error: " + getMessage();
+}
+```
+
+See [Annotations](/docs/reference/language/annotations) for the full set.
+
+## Fragments
+
+A *fragment* is a named, reusable block of code that lives inside a class. Fragments are declared with the `fragment` keyword:
+
+```cloth
+public fragment run(): void {
+    println("Hello World");
+}
+```
+
+A fragment declaration looks like a function declaration but uses `fragment` in place of `func`. Fragments share the parameter, return-type, and modifier syntax with functions.
+
+Fragments are most useful when a class has internal logic that would otherwise be repeated across constructors, methods, or other fragments. A fragment is invoked the same way a function is — by name, with arguments in parentheses — and it may be assigned to a binding for later invocation:
+
+```cloth
+let frag = run();
+frag();
+```
+
+Fragments may be overloaded by parameter list, like ordinary functions.
+
+## Lambdas
+
+A *lambda* is an anonymous function expression. Lambdas appear wherever a value is expected and can be assigned to bindings, passed to other functions, or invoked immediately. A lambda value carries a parameter list and a body.
+
+A lambda's body can be a single expression (whose value becomes the lambda's result) or a block of statements. A lambda's parameter list and body together determine its type, which is a function type.
+
+## Calling functions
+
+Functions are called by writing the function name followed by an argument list in parentheses:
+
+```cloth
+println("Hello, World!");
+```
+
+Member functions are called through a receiver expression and the `.` operator:
+
+```cloth
+return v + other.get();
+```
+
+Static functions are called through the class name:
+
+```cloth
+let buf = $calloc($strlen(a) + $strlen(b) + 1, 1);
+```
+
+Function calls are expressions; their result has the function's return type and may participate in any expression that accepts that type.

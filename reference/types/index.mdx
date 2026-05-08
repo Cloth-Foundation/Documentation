@@ -1,0 +1,68 @@
+# Type System Overview
+
+Cloth has a static, nominal type system. Every value has a type that is known at compile time, and the compiler verifies that operations are applied only to compatible types.
+
+## The shape of a type expression
+
+Every place a type appears in source — a field declaration, a parameter, a return type, a cast target — it is written as a *type expression*. A type expression has three parts:
+
+```
+TypeExpression = BaseType + ["!"] + [OwnershipModifier]
+```
+
+- **Base type** — the underlying form of the type. Every base type falls into one of six categories, listed below.
+- **Nullability** — an optional `!` suffix marks the type as nullable, meaning the value may be `null`.
+- **Ownership modifier** — an optional modifier (`Transfer` or `MutBorrow`) controls how the value moves through the program. Ownership is described in detail in [Memory and Errors](/docs/reference/language/memory-and-errors).
+
+## Base type categories
+
+Cloth has six categories of base type:
+
+| Category | Description | Examples |
+|----------|-------------|----------|
+| **Named** | A built-in primitive or user-defined type referred to by name. | `i32`, `bool`, `string`, `Object`, `Foo` |
+| **Generic** | A named type parameterized by one or more type arguments. | `List<i32>`, `Map<string, i32>` |
+| **Array** | A homogeneous sequence of elements of one type. | An array of `i32` |
+| **Tuple** | A fixed-length, ordered group of values of possibly different types. | `(i32, string)` |
+| **Void** | The absence of a value. Legal only as a function return type. | `void` |
+| **Any** | A type-erased value. Holds any type. | `any` |
+
+## Built-in named types
+
+Cloth provides a fixed set of built-in named types. They are reserved keywords and cannot be redefined.
+
+### Numeric
+
+- Signed integers: `i8`, `i16`, `i32`, `i64`
+- Unsigned integers: `u8`, `u16`, `u32`, `u64`
+- Floating-point: `f32`, `f64`
+- Convenience aliases: `int`, `uint`, `unsigned`, `short`, `long`, `float`, `double`, `real`
+
+### Logical and character
+
+- `bool` — boolean (`true` / `false`)
+- `char` — a single character
+- `byte` — an 8-bit value
+- `bit` — a single bit
+
+### Text
+
+- `string` — text values
+
+### Special
+
+- `void` — no value (return type only)
+- `any` — type-erased value
+- `null` — the null literal value (matches any nullable type)
+- `NaN` — the IEEE 754 not-a-number literal (matches floating-point types)
+
+## Where to go next
+
+- [Integers](/docs/reference/types/integers)
+- [Floating-Point](/docs/reference/types/floating-point)
+- [Boolean, Char, and Byte](/docs/reference/types/boolean-char-byte)
+- [String](/docs/reference/types/string)
+- [Arrays and Tuples](/docs/reference/types/arrays-and-tuples)
+- [Nullable Types](/docs/reference/types/nullable)
+- [Any and Void](/docs/reference/types/any-and-void)
+- [Generics](/docs/reference/types/generics)

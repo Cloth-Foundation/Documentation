@@ -1,0 +1,96 @@
+# Interfaces, Traits, and Enums
+
+In addition to classes and structs, Cloth has three further declaration kinds: *interfaces* for abstract contracts, *traits* for attributes attached to declarations, and *enums* for enumerated values.
+
+## Interfaces
+
+An *interface* is an abstract contract. It declares a set of members that any implementing type must provide. Interfaces have no fields, no constructors, no destructors, and no method bodies — only signatures.
+
+```
+[visibility] interface Name {
+    ...member signatures...
+}
+```
+
+A class or struct declares that it implements one or more interfaces using the implements list:
+
+```cloth
+public class (): Object -> Serializable, Nullable {
+    ...
+}
+```
+
+Each interface in the list contributes its required members. The class must supply a definition for every required member, with matching name, parameters, and return type.
+
+A single class may implement any number of interfaces. A single interface may be implemented by any number of unrelated classes.
+
+## Traits
+
+A *trait* is an attribute-style annotation applied to a declaration. Traits are not contracts in the way interfaces are; they are tags that the compiler and tools recognize, sometimes attaching behavior, sometimes merely informational.
+
+A trait declaration introduces a new annotation that can then be applied:
+
+```
+[visibility] trait Name {
+    ...
+}
+```
+
+A trait is *applied* by writing `@TraitName` immediately above the declaration it annotates. Three trait annotations are built in:
+
+- **`@Override`** — Marks a method as overriding a member of a base class. The compiler verifies that the member actually overrides something.
+- **`@Implementation`** — Marks a member as the implementation of an interface requirement.
+- **`@Deprecated`** — Marks a declaration as deprecated. The compiler may emit warnings at use sites.
+
+Example:
+
+```cloth
+@Override
+public func toString() : string {
+    return "Error: " + getMessage();
+}
+```
+
+User-defined traits are declared with the `trait` keyword and can be applied the same way.
+
+### Interfaces vs. traits
+
+The distinction matters: interfaces describe *what a type can do* (a set of methods that callers may invoke), while traits describe *how a declaration should be treated* (a tag the compiler reads when processing the declaration).
+
+| Construct | Adds members? | Adds behavior at use site? | Applied with |
+|-----------|---------------|----------------------------|--------------|
+| Interface | Yes (signatures) | Yes (callable methods) | `-> Iface` in implements list |
+| Trait     | No | No, but may change compilation | `@TraitName` above the declaration |
+
+## Enums
+
+An *enum* declares a fixed, named set of values. Each value is a discriminant of the enum's type.
+
+```
+[visibility] enum Name {
+    Variant1,
+    Variant2,
+    ...
+}
+```
+
+A reference to a variant uses the dot syntax: `EnumName.Variant1`. The type of the expression is `EnumName`.
+
+### Variants with payloads
+
+A variant may carry a payload — a tuple of values stored alongside the discriminant. A variant with a payload looks like a function signature:
+
+```
+enum Result {
+    Ok(value),
+    Err(error)
+}
+```
+
+When a variant has a payload, constructing the variant requires supplying values for it, and pattern-matching on the variant exposes those values.
+
+### Use in code
+
+Enums are first-class types. They appear wherever any other type may appear: in fields, parameters, variable bindings, return types, and as the operand of `is` and `as` for runtime queries.
+
+Comparison of two enum values uses the `==` and `!=` operators. The result is `true` only when both the discriminant and any payload values are equal.

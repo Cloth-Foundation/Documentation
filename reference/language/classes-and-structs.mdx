@@ -1,0 +1,160 @@
+# Classes and Structs
+
+A *class* is a reference type with identity, lifetime, and a set of members. A *struct* is a value type with the same member machinery but different copy and lifetime semantics. Together they form the core of Cloth's user-defined type system.
+
+## The class declaration
+
+A class declaration consists of a visibility, the keyword `class`, an optional list of *primary parameters*, an optional inheritance and implementation list, and a body of members:
+
+```
+[visibility] class [<TypeParams>] (PrimaryParams) [: BaseClass] [-> Interface, ...] {
+    ...members...
+}
+```
+
+A class is named after the file that declares it. A file `Foo.co` declares the class `Foo`. The name of the class is optional, however, it is common practice to omit the name as there is only one top-level declaration in a file.
+The name is derived from the name of the file itself, which is case-sensitive.
+
+The identifier is required for a sub-class declared within another class.
+
+All classes are implicitly `internal` unless specified to be `public`. A top-level class cannot be `private`.
+
+A minimal example:
+
+```cloth
+module hello.foo;
+
+import cloth.io.Out::{ println };
+
+public class () {
+
+    private i32 v;
+
+    public Foo {
+        v = 1;
+    }
+
+    public Foo(i32 x) {
+        v = x;
+    }
+
+    public func get(): i32 {
+        return v;
+    }
+
+}
+```
+
+## Primary parameters
+
+The parenthesized parameter list immediately after the `class` keyword declares *primary parameters*. Primary parameters are promoted to fields with the same name, type, and visibility, and are used to initialize the object during construction.
+
+```cloth
+public class (string! message) {
+    public const string! message { public getter; };
+}
+```
+
+A class with an empty primary-parameter list is written with empty parentheses: `public class () { ... }`.
+
+## Inheritance
+
+A single class may extend at most one other class. The base class is named after a colon:
+
+```cloth
+public class (): Object {
+    ...
+}
+```
+
+If no `:` clause appears, the class has no base class. To inherit from `cloth.lang.Object` — for example, to opt into the methods it provides — name it explicitly in the `:` clause.
+
+## Implements list
+
+After the optional base class, a class may declare that it implements one or more interfaces. The implements list is introduced by `->` and lists the interfaces separated by commas:
+
+```cloth
+public class (): Object -> Serializable, Nullable {
+    ...
+}
+```
+
+The class is then required to provide every member declared by each named interface.
+
+## Constructors
+
+A *constructor* runs when an instance of the class is created. There are two forms.
+
+A **default constructor** has no parameter list of its own. Its name is the class name and its body is the only thing written:
+
+```cloth
+public Foo {
+    v = 1;
+}
+```
+
+A **parameterized constructor** writes its parameters in parentheses after the class name:
+
+```cloth
+public Foo(i32 x) {
+    v = x;
+}
+```
+
+A class may declare any number of parameterized constructors, distinguished by their parameter lists.
+
+## Destructors
+
+A *destructor* runs when an instance is destroyed. Destruction is deterministic — every object's destructor runs at a precisely defined point, governed by the ownership rules described in [Memory and Errors](/docs/reference/language/memory-and-errors).
+
+A destructor's name is the class name preceded by a tilde:
+
+```cloth
+public ~Foo {
+    println("Goodbye");
+}
+```
+
+A class declares at most one destructor. The destructor takes no parameters.
+
+## Fields
+
+A field is a class-level value declaration. Fields are written with a visibility, an optional set of modifiers, a type, and a name:
+
+```cloth
+private i32 v;
+```
+
+Fields may carry the modifiers `const` (immutable for the lifetime of the object) and `atomic` (thread-safe access). Field declarations end with a semicolon.
+
+## Methods
+
+Methods are declared with the keyword `func`. See [Functions and Fragments](/docs/reference/language/functions-and-fragments) for the full syntax. A method declared inside a class without the `static` modifier is an instance method; with `static`, it is a class-level method called through the class name.
+
+## Property accessors
+
+A field declaration may carry an *accessor block* describing how the field is read or written from outside the class. The accessor block is written in braces after the field's type and name:
+
+```cloth
+public const string! message { public getter; };
+```
+
+The block lists the accessors the field exposes. `getter` declares a read accessor; `setter` declares a write accessor. Each may carry its own visibility.
+
+## Structs
+
+A struct is a value type. Its declaration uses the keyword `struct` in place of `class`:
+
+```
+[visibility] struct (PrimaryParams) [-> Interface, ...] {
+    ...members...
+}
+```
+
+Structs share the member machinery of classes — primary parameters, fields, methods, constructors, destructors, accessors — but differ in lifecycle:
+
+- **Identity.** A class instance has identity; equality is by reference unless overridden. A struct value is equal to another struct value when their fields are equal.
+- **Copy semantics.** Assigning a struct to another binding produces an independent copy. Assigning a class instance produces another reference to the same object.
+- **Allocation.** Struct values live where they are declared (on the stack, inside another value, etc.). Class instances are allocated by the runtime under the ownership tree.
+
+Use `struct` for small, value-like data — points, sizes, identifiers, fixed records — where copying is cheap and identity is irrelevant. Use `class` for everything else.
