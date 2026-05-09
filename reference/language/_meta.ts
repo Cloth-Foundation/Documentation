@@ -2,6 +2,7 @@ export default {
     index: 'Overview',
     'modules-and-imports': 'Modules and Imports',
     'classes-and-structs': 'Classes and Structs',
+    'nested-classes': 'Nested Classes',
     'interfaces-traits-enums': 'Interfaces, Traits, and Enums',
     'functions-and-fragments': 'Functions and Fragments',
     'variables-and-visibility': 'Variables and Visibility',

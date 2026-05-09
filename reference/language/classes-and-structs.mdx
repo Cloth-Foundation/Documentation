@@ -12,10 +12,9 @@ A class declaration consists of a visibility, the keyword `class`, an optional l
 }
 ```
 
-A class is named after the file that declares it. A file `Foo.co` declares the class `Foo`. The name of the class is optional, however, it is common practice to omit the name as there is only one top-level declaration in a file.
-The name is derived from the name of the file itself, which is case-sensitive.
+A top-level class takes its name from the file that declares it. A file `Foo.co` declares the class `Foo`. The identifier may be omitted from the source, in which case the file name is used directly; if it is written, it must match the file name exactly (case-sensitive). Most code omits it, since there is one top-level class per file.
 
-The identifier is required for a sub-class declared within another class.
+A class declared inside another class's body is a *nested class*. Nested classes follow the same member rules as top-level classes but require an explicit identifier and primary-parameter parentheses, and they may opt into outer-instance capture with the `inner` modifier. The full treatment is on the [Nested Classes](/docs/reference/language/nested-classes) page.
 
 All classes are implicitly `internal` unless specified to be `public`. A top-level class cannot be `private`.
 
