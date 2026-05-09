@@ -42,45 +42,55 @@ Each `case` matches one pattern. The `default` arm runs if no case matches. With
 
 ## Loops
 
+Cloth has four loop forms — `while`, `do`-`while`, the C-style `for`, and `for`-`in`. Each is introduced by its keyword and runs a single brace block as its body. The control statements `break` and `continue` work uniformly across them.
+
 ### `while`
 
 A `while` loop evaluates its condition before each iteration and runs the body while the condition is true:
 
-```
-while (condition) {
-    ...
+```cloth
+i32 j = 0;
+while (j < 5) {
+    j = j + 1;
 }
 ```
 
-If the condition is `false` on entry, the body never runs.
+The condition must be parenthesized and produce a `bool`. If the condition is false on entry, the body never runs. There is no body-less form — `while (cond);` is rejected.
 
 ### `do`-`while`
 
-A `do`-`while` loop runs the body once before evaluating the condition:
+A `do`-`while` loop runs its body once before checking the condition. The closing `while (cond);` is followed by a mandatory semicolon:
 
-```
+```cloth
+i32 k = 0;
 do {
-    ...
-} while (condition);
+    k = k + 1;
+} while (k < 3);
 ```
 
-The body always runs at least once. The trailing `while` ends with a semicolon.
+Use `do`-`while` when the body must run at least once — typically when the condition depends on state computed inside the body.
 
 ### `for` (C-style)
 
-A C-style `for` loop has three parts: an initializer, a condition, and an iterator step. Each runs at the position implied by its name:
+A C-style `for` declares an initializer, a condition, and an iterator step in one header. All three parts are required:
 
-```
-for (init; condition; iterator) {
-    ...
+```cloth
+for (i32 i = 0; i < 3; i++) {
+    println(i);
 }
 ```
 
-Any of the three parts may be omitted.
+- **Initializer** is a single statement: a typed declaration (`Type name = expr;`), a `let` binding (`let name = expr;`), or any expression statement followed by `;`.
+- **Condition** is any expression producing a `bool`. It runs before each iteration; the body runs only when the condition is true.
+- **Iterator** is any expression. It runs after each iteration of the body, before the next condition check. `i++`, `i = i + 1`, and method calls are all legal.
+
+There is no abbreviated form — `for (;;)` is rejected. When you don't need an explicit init or step, use `while (true)` and place initialization before the loop and the step at the end of the body.
+
+The loop variable declared in the initializer is scoped to the loop. It cannot be referenced after the closing brace.
 
 ### `for`-`in`
 
-A `for`-`in` loop iterates over the elements of an iterable value. Each iteration binds the next element to the loop variable:
+A `for`-`in` loop binds each element of an iterable to a typed loop variable:
 
 ```
 for (TypeName name in iterable) {
@@ -88,16 +98,52 @@ for (TypeName name in iterable) {
 }
 ```
 
-The loop variable's type is declared inline. Inside the body, the variable holds the current element.
+The syntax is reserved and parses today, but runtime support for iteration is not yet wired through codegen. Until then, write a C-style `for` with explicit indexing.
+
+## Pre/post increment and decrement
+
+`++` and `--` apply to integer lvalues — local variables and fields whose type is one of `i8`/`i16`/`i32`/`i64`/`u8`/`u16`/`u32`/`u64`. Both prefix and postfix forms are supported:
+
+```cloth
+i32 i = 0;
+i++;        // postfix: result is the old value, the variable becomes 1
+++i;        // prefix:  the variable becomes 2, result is the new value
+i--;        // postfix decrement
+--i;        // prefix decrement
+```
+
+The operand must be a writable location. Applying `++` or `--` to a literal, a constant, or a non-integer is rejected at compile time. Pre- and post-form differ only when the result of the expression is used: post yields the value before the change, pre yields the value after. In a `for`-loop iterator step both behave the same, since the produced value is discarded.
 
 ## Loop control
 
-Two statements influence the surrounding loop:
+Two statements alter the flow of the surrounding loop:
 
-- **`break`** — terminates the innermost enclosing loop or `switch` and resumes execution at the statement after it.
-- **`continue`** — skips the rest of the current iteration and continues with the next iteration's condition or iterator step.
+- **`break;`** — terminates the innermost enclosing loop and resumes execution at the statement after it.
+- **`continue;`** — skips the rest of the current iteration. In `while` and `do`-`while`, control jumps back to the condition check. In a C-style `for`, control jumps to the iterator step (so the post-increment still runs) and then re-checks the condition.
 
-Both statements end with a semicolon.
+```cloth
+i32 j = 0;
+while (j < 100) {
+    if (j == 5) {
+        break;
+    }
+    j = j + 1;
+}
+// j == 5 here.
+```
+
+```cloth
+i32 sum = 0;
+for (i32 n = 0; n < 5; n++) {
+    if (n == 1) {
+        continue;
+    }
+    sum = sum + n;
+}
+// sum == 9 (0 + 2 + 3 + 4).
+```
+
+Both statements end with a semicolon and must appear inside a loop. Using `break` or `continue` outside any loop is rejected at compile time. Loop labels (e.g. `break outer;`) are not supported — control statements always target the innermost enclosing loop.
 
 ## `return`
 
