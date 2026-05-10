@@ -58,6 +58,8 @@ Field declarations may carry the following modifiers:
 | `const`  | The field's value cannot change after construction. |
 | `static` | The field belongs to the class, not to instances. |
 
+Bindings are non-nullable by default. To allow `null`, declare the type with the `?` postfix; see [Nullability](/docs/reference/language/nullable) for the full rules.
+
 ## Visibility
 
 Three visibility modifiers control where a declaration can be referenced from.
