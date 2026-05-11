@@ -30,7 +30,7 @@ if (count == 0) {
 
 A `switch` statement chooses among several alternatives based on the value of an expression:
 
-```
+```cloth
 switch (expr) {
     case pattern1: ...
     case pattern2: ...
@@ -38,7 +38,37 @@ switch (expr) {
 }
 ```
 
-Each `case` matches one pattern. The `default` arm runs if no case matches. Within a case body, ordinary statements are legal, including the loop-control statements described below.
+Patterns are compared against the discriminant in source order; the first match runs that case's body and exits the switch. There is **no C-style fall-through** — a case body does not drop into the next case. Use `break` only to exit early from inside a nested loop or to leave the switch from inside a deeper block; ordinary completion of a case body already exits the switch.
+
+The `default` arm runs when no case pattern matches. It may appear anywhere in the case list, though convention is last.
+
+### Patterns
+
+A pattern is any expression of the discriminant's type. The compiler lowers each case to an equality comparison: integer and pointer discriminants use `icmp eq`, floating-point discriminants use `fcmp oeq`, and enum-typed discriminants compare singleton pointers (see [Enums](/docs/reference/language/interfaces-traits-enums#enums)).
+
+Common discriminant types and their patterns:
+
+```cloth
+// integer
+switch (code) {
+    case 200: ...
+    case 404: ...
+    default:  ...
+}
+
+// enum (variants are first-class patterns)
+switch (color) {
+    case Color.RED:   ...
+    case Color.GREEN: ...
+    case Color.BLUE:  ...
+}
+```
+
+### Exhaustiveness on enums
+
+When the discriminant types as an enum and the switch has no `default:` arm, every declared case must appear as a pattern. The compiler rejects an incomplete enum switch with `S02F NonExhaustiveSwitch`, listing the missing case names. Adding any missing case — or a `default:` branch — clears the error.
+
+Switches on non-enum types (integers, strings, etc.) don't enforce exhaustiveness; without a matching pattern and no `default:`, the switch exits silently.
 
 ## Loops
 

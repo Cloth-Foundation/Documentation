@@ -1,6 +1,6 @@
 # Interfaces, Traits, and Enums
 
-In addition to classes and structs, Cloth has three further declaration kinds: *interfaces* for method contracts, *traits* for attributes attached to declarations, and *enums* for enumerated values.
+In addition to classes and structs, Cloth has three further declaration kinds: *interfaces* for method contracts, *traits* for attributes attached to declarations, and *enums* for fixed sets of named singleton values with optional associated data.
 
 ## Interfaces
 
@@ -93,33 +93,136 @@ The distinction matters: interfaces describe *what a type can do* (a set of meth
 
 ## Enums
 
-An *enum* declares a fixed, named set of values. Each value is a discriminant of the enum's type.
+An *enum* declares a fixed, compile-time-known set of named singletons. Every variant of the same enum shares one struct shape; user code references variants by name, never constructs them, and uses each variant value as a pointer to the corresponding singleton.
 
-```
-[visibility] enum Name {
-    Variant1,
-    Variant2,
-    ...
+### Two declaration forms
+
+**Bare list** — variants only, no constructor signature:
+
+```cloth
+public enum {
+    RED,
+    GREEN,
+    BLUE
 }
 ```
 
-A reference to a variant uses the dot syntax: `EnumName.Variant1`. The type of the expression is `EnumName`.
+Each variant carries only its built-in metadata (ordinal + name). Use this form for plain named-value sets where no associated data is needed.
 
-### Variants with payloads
+**With constructor parameters** — each variant binds values to a declared parameter signature:
 
-A variant may carry a payload — a tuple of values stored alongside the discriminant. A variant with a payload looks like a function signature:
+```cloth
+public enum (f64 average, i32 age, string name) {
 
-```
-enum Result {
-    Ok(value),
-    Err(error)
+    MARK = (175.5, 25, "Mark"),
+    JAMES = (160.0, 26, "James"),
+    MARY = (144.0, 31, "Mary")
+
 }
 ```
 
-When a variant has a payload, constructing the variant requires supplying values for it, and pattern-matching on the variant exposes those values.
+The constructor signature appears in parentheses immediately after `enum`. Every variant must supply exactly that many arguments with matching (or losslessly-promotable) types. Each argument expression must be a **compile-time constant** — literals, unary `-`, and binary arithmetic over literals are accepted; identifier references, function calls, and other runtime expressions are rejected.
 
-### Use in code
+### Variants are singletons
 
-Enums are first-class types. They appear wherever any other type may appear: in fields, parameters, variable bindings, return types, and as the operand of `is` and `as` for runtime queries.
+Each variant lowers to one `constant` global. Two references to the same variant compare equal as pointers (`MARK == MARK` is `true`); two distinct variants of the same enum compare unequal regardless of their field values. Equality uses `==` / `!=`. Variants are immutable — their fields cannot be reassigned.
 
-Comparison of two enum values uses the `==` and `!=` operators. The result is `true` only when both the discriminant and any payload values are equal.
+### Built-in methods
+
+Every variant carries two compiler-supplied accessors, regardless of declaration form:
+
+| Method | Returns | Description |
+|---|---|---|
+| `getOrdinal()` | `i32` | Zero-based position in the declaration. The first case is `0`. |
+| `name()` | `string` | The variant's identifier as written in source (e.g. `"MARK"`). |
+
+For the constructor-parameter form, an additional `get<Capitalized>()` getter is generated per declared parameter — matching the accessor-block naming convention (`private int i = 0 { getter; }` → `getI()`):
+
+```cloth
+let mark = People.MARK;
+mark.getAverage();    // 175.5
+mark.getAge();        //  25
+mark.getName();       // "Mark"
+mark.getOrdinal();    //  0
+mark.name();          // "MARK"
+```
+
+### Static `valueOf(string)`
+
+Every enum also gets a static lookup-by-name method:
+
+```cloth
+let person = People.valueOf("JAMES") ?? People.MARK;
+person.getName();     // "James"
+
+let none = People.valueOf("NOBODY");      // none is null (People?)
+let fb = none ?? People.MARK;             // null-coalesce to a fallback
+```
+
+`valueOf(name)` returns `EnumType?` (nullable). It returns a non-null variant pointer when `name` exactly matches a declared case identifier and `null` otherwise. Use `??` to provide a fallback or pattern an `if (x == null)` check against the result.
+
+### Methods declared in the enum body
+
+After the case list (optionally separated by `;`), an enum body may declare regular methods. They behave like instance methods on a class: `this` is the variant pointer, the method has access to every field via the auto-generated getters or by name, and lives at module scope per enum (one body shared across all variants — there are no per-variant overrides).
+
+```cloth
+public enum (f64 average, i32 age, string name) {
+
+    MARK = (175.5, 25, "Mark"),
+    JAMES = (160.0, 26, "James"),
+    MARY = (144.0, 31, "Mary");
+
+    public func describe(): string {
+        return name + " is " + age + " years old";
+    }
+}
+```
+
+### Switching on an enum
+
+`switch` patterns match enum variants by their case-ref:
+
+```cloth
+switch (person) {
+    case People.MARK:  println("hi Mark");
+    case People.JAMES: println("hi James");
+    case People.MARY:  println("hi Mary");
+}
+```
+
+Cases compare the discriminant against each `EnumName.CASE` pattern in order; the first match runs that case's body and exits the switch. There is **no C-style fall-through** — bodies don't drop into the next case automatically.
+
+A `default:` arm runs when no case pattern matches:
+
+```cloth
+switch (person) {
+    case People.MARK:  println("matched mark");
+    default:           println("everyone else");
+}
+```
+
+The analyzer enforces **exhaustiveness** when the discriminant's type is an enum and no `default:` arm is present. Every declared case must appear as a pattern, or the compiler rejects the switch with `S02F NonExhaustiveSwitch`, listing the missing cases.
+
+### Runtime representation
+
+Each variant is a static struct constant with the layout `{ i32 ordinal, ptr name, <param-types…> }`. Built-in fields at offsets 0 and 1 power `getOrdinal()` / `name()`; user parameters follow in declaration order. The enum-typed value carried in user code is a pointer to one of these constants — comparisons are pointer-equality, field access is a struct load through the pointer, method calls dispatch directly to the synthesized or user-written body.
+
+The data is in static memory (one constant global per case), shared by every reference to a given variant. Variant access is allocation-free.
+
+### Diagnostics
+
+| Code | Trigger |
+|---|---|
+| `S02C` EnumCaseArgMismatch | Case's argument count differs from the constructor signature's parameter count. |
+| `S02D` EnumCaseNonConst | A case argument isn't a compile-time constant (literal, unary `-`, or arithmetic on those). |
+| `S02E` DuplicateEnumCase | Two cases in the same enum share a name. |
+| `S02F` NonExhaustiveSwitch | A `switch` over an enum-typed value omits one or more cases and has no `default:` arm. |
+
+Each fires from a global pre-pass so the structural error is reported from the enum's own file regardless of how the code that uses the enum is ordered alphabetically across the project.
+
+### Not yet supported
+
+- **Variants with per-case payload shapes** (sum types like `Some(T)` vs. `None`). The singleton-pointer layout requires every variant to share the same struct, so the user's design choice here was deliberate: data attached to enum cases is *uniform* across all variants. Per-variant shapes would need a separate language construct (e.g. a `union` or `case class` keyword), which is on the backlog but not in this release.
+- **`values(): EnumType[]`** — auto-generation is gated on array literal syntax and `T[]` element indexing landing in the codegen first. The slot is reserved.
+- **Ordinal-based comparison operators** (`<`, `<=`, `>`, `>=`) — currently only `==` and `!=` are wired. Comparing ordinals manually via `getOrdinal()` works in the meantime.
+- **Variant-specific method overrides** (Java's anonymous-class-per-variant). Methods on an enum live once at the type level; per-variant behavior should branch inside the method or be expressed via a separate type.

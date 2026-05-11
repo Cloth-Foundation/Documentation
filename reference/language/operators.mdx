@@ -12,10 +12,15 @@ This page lists every operator the lexer recognizes and describes its meaning. O
 | `*`  | binary | Multiplication. | numeric |
 | `/`  | binary | Division. | numeric |
 | `%`  | binary | Remainder of division. | numeric |
+| `^`  | binary | Power (exponentiation). | numeric |
 | `++` | prefix or postfix | Increment by one. | numeric |
 | `--` | prefix or postfix | Decrement by one. | numeric |
 
 Prefix `++a` increments and yields the new value. Postfix `a++` increments and yields the previous value. The same applies to `--`.
+
+`^` is **right-associative** — `2 ^ 3 ^ 2` groups as `2 ^ (3 ^ 2) = 2 ^ 9 = 512`. It binds tighter than `*`, `/`, and `%`, so `4 * 2 ^ 3` is `4 * (2 ^ 3) = 32`. Unary `-` binds tighter still, so `-10 ^ 2` is `(-10) ^ 2 = 100`, matching calculator-style math conventions.
+
+Integer-on-integer `^` produces an `i64` result regardless of operand widths, because power grows fast enough that picking the wider operand's type would silently truncate (`2 ^ 10` typed as `i8` would otherwise overflow to `0`). When either operand is a float, the result is `f64`. Negative integer exponents yield `0` from the integer helper; cast the base to a float (`(x as f64) ^ -1`) to get a fractional result.
 
 ## Compound assignment
 
@@ -30,7 +35,7 @@ Each compound-assignment operator combines an arithmetic or bitwise operation wi
 | `%=`     | `a = a % b`  |
 | `&=`     | `a = a & b`  |
 | `|=`     | `a = a \| b` |
-| `^=`     | `a = a ^ b`  |
+| `^=`     | `a = a ^ b` (power) |
 
 ## Comparison
 
@@ -44,6 +49,8 @@ Each compound-assignment operator combines an arithmetic or bitwise operation wi
 | `>=` | Greater than or equal. |
 
 Each comparison produces a `bool`. Operands must have matching types.
+
+For class instances and enum variants, `==` and `!=` compare reference identity — `a == b` is true when both sides refer to the same object. Two distinct class instances with equal field values compare unequal. Two references to the same enum variant compare equal because every variant is a singleton; references to different variants of the same enum compare unequal regardless of their field values. The ordering operators `<` / `<=` / `>` / `>=` are not defined on class or enum types in this release.
 
 ## Logical
 
@@ -61,12 +68,13 @@ Each comparison produces a `bool`. Operands must have matching types.
 |----------|---------|---------------|
 | `&`  | Bitwise AND. | integer |
 | `|`  | Bitwise OR. | integer |
-| `^`  | Bitwise XOR. | integer |
 | `~`  | Bitwise NOT (one's complement). | integer |
 | `<<` | Left shift. | integer |
 | `>>` | Right shift. | integer |
 
-The bitwise operators are defined on integer types only. Their compound forms (`&=`, `|=`, `^=`) appear in the [Compound assignment](#compound-assignment) table.
+The bitwise operators are defined on integer types only. Their compound forms (`&=`, `|=`) appear in the [Compound assignment](#compound-assignment) table.
+
+Bitwise XOR currently has no dedicated operator. `^` is reserved for power; a future release may reintroduce XOR under a different token if a need surfaces.
 
 ## Assignment
 
