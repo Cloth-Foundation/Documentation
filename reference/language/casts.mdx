@@ -49,11 +49,13 @@ Every cast is checked at the analyzer level. Illegal combinations fail with `S01
 | Source | Target | Verdict |
 |---|---|---|
 | primitive | primitive | OK (any combo; explicit cast = user accepts narrowing risk) |
-| class C | interface I | OK iff C implements I (upcast) |
-| interface I | class C | OK iff C implements I (downcast) |
-| interface I1 | interface I2 | OK; runtime decides |
+| class C | interface I | OK iff C transitively implements I (upcast) |
+| interface I | class C | OK iff C transitively implements I (downcast) |
+| interface I1 | interface I2 | OK; assignability honors the inheritance chain |
 | class C1 | class C2 | OK when one extends the other (in either direction) |
 | primitive ↔ reference | — | rejected |
+
+"Transitively implements" means C either lists I directly in its `-> ...` clause, or lists some interface that extends I (possibly through several `:` hops). For example, if `Polite : Greeter` and `class C -> Polite`, then `C` is assignable to both `Polite` and `Greeter`, and a value of static type `Polite` is assignable to a `Greeter` slot via interface→ancestor-interface upcast.
 
 Same-type, class→interface upcasts, and class→ancestor upcasts compile to no-ops at runtime — the underlying pointer is already valid. Class→descendant and class→sibling downcasts walk the receiver's class lineage at runtime.
 

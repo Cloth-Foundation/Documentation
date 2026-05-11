@@ -68,6 +68,172 @@ public class (): Object {
 
 If no `:` clause appears, the class has no base class. To inherit from `cloth.lang.Object` — for example, to opt into the methods it provides — name it explicitly in the `:` clause.
 
+### Inherited members
+
+Fields and methods declared on an ancestor are visible through any reference along the chain. A child instance can read or write a parent's field (subject to the field's declared visibility — `private` stays inaccessible to subclasses), and a method declared on an ancestor can be called on a descendant reference without redeclaration.
+
+```cloth
+public class () {
+    public i32 wheels = 4;
+    public Vehicle {}
+    public ~Vehicle {}
+}
+
+public class () : Vehicle {
+    public Pickup {}
+    public ~Pickup {}
+}
+
+let p = new Pickup();
+println(p.wheels);   // 4 — field declared on Vehicle, read through Pickup
+```
+
+### Construction and destruction order
+
+A child constructor implicitly calls the parent's no-argument constructor before running its own prologue. The full sequence at `new Child()` is:
+
+1. The parent constructor runs, recursively chaining to its own parent first. Each level installs its vtable, stores its primary parameters into the corresponding fields, and runs its field initializers and user-written body.
+2. The child constructor then runs the same prologue for itself. Its vtable store overwrites the parent's, so virtual dispatch sees the child's overrides from the first instruction of the child's user-written body onward.
+
+Cycles in the `:` extends chain are rejected at compile time (`S02B ClassInheritanceCycle`).
+
+Destruction runs in reverse: the child's body executes first, followed by its auto-destruct epilogue for class-typed fields, and only then is the parent's destructor invoked. Every class participates in the chain — a class that declares no destructor receives a synthesized one that performs the auto-destruct epilogue and the parent call.
+
+Cloth currently chains only through the parent's no-argument constructor. If the parent class declares only parameterized constructors, the child cannot satisfy the chain automatically; passing arguments to a specific parent constructor will be a later language feature.
+
+## Prototype classes
+
+A class marked `prototype` exists to be extended. It cannot be instantiated directly — `new ProtoClass()` is a compile-time error. Use it as a base for concrete subclasses:
+
+```cloth
+public prototype class () {
+
+    public Shape {
+    }
+
+    public ~Shape {
+    }
+
+    public prototype func name(): string;
+}
+```
+
+A `prototype func` declares a member without a body. Such functions can **only** appear inside a prototype class; declaring one in a concrete class is an error. Concrete subclasses must supply the body:
+
+```cloth
+public class () : Shape {
+
+    public Circle {
+    }
+
+    public ~Circle {
+    }
+
+    @Override
+    public func name(): string {
+        return "circle";
+    }
+}
+```
+
+Every concrete (non-`prototype`) class that has a prototype ancestor must provide an implementation for every prototype function declared anywhere in its ancestor chain. A `prototype` subclass may leave prototype methods unimplemented; the obligation passes to the first concrete descendant.
+
+Calls to a prototype method dispatch virtually through the receiver's hidden vtable. A reference typed as the prototype base resolves to the most-derived override at runtime:
+
+```cloth
+let c = new Circle();
+Shape s = c;
+println(s.name());   // "circle" — virtual dispatch to Circle's override
+```
+
+A prototype class can extend any other class (prototype or concrete) and implement interfaces just like a regular class. Construction rules apply to all subclasses: a concrete subclass of a prototype is instantiable; another prototype subclass is not.
+
+### Restrictions on `prototype func`
+
+A `prototype func` cannot carry the `static` modifier, the `@Extern("...")` annotation, or `private` visibility:
+
+- **`static`** would skip the vtable, making the contract unreachable through virtual dispatch (`S028`).
+- **`@Extern`** binds the body to an external C symbol, which contradicts the prototype's promise that subclasses supply the body (`S029`).
+- **`private`** is invisible to subclasses, so no override can ever satisfy the contract (`S02A`). Use `public` or `internal`.
+
+### Overriding in an intermediate prototype
+
+An intermediate prototype class can provide a concrete body for a prototype function inherited from its own ancestor. When it does, descendants further down the chain are not required to re-declare that function — the intermediate's implementation already satisfies the contract.
+
+```cloth
+public prototype class () {
+    public Vehicle {}
+    public ~Vehicle {}
+    public prototype func make(): string;
+    public prototype func model(): string;
+}
+
+public prototype class () : Vehicle {
+    public Truck {}
+    public ~Truck {}
+    @Override
+    public func make(): string { return "ford"; }
+    // model() remains prototype — concrete subclasses must implement it.
+}
+
+public class () : Truck {
+    public Pickup {}
+    public ~Pickup {}
+    @Override
+    public func model(): string { return "f-150"; }
+    // make() is inherited from Truck; no redeclaration needed.
+}
+```
+
+A concrete subclass remains free to override any inherited method, prototype or not.
+
+### Empty prototype classes
+
+A prototype class with no prototype functions is a non-instantiable marker base. It compiles, can be extended, and supports the usual `is`/`as`/`as?` chain checks against any class along the hierarchy:
+
+```cloth
+public prototype class () {
+    public BaseTag {}
+    public ~BaseTag {}
+}
+
+public class () : BaseTag {
+    public LeafTag {}
+    public ~LeafTag {}
+}
+
+let leaf = new LeafTag();
+if (leaf is BaseTag) { ... }   // chain walk succeeds
+```
+
+### Prototypes and interfaces
+
+A prototype class may list interfaces in its `-> ...` clause. The prototype class can satisfy the contract itself with concrete method bodies (often paired with the `@Implementation` annotation); concrete subclasses then inherit those implementations without redeclaring them:
+
+```cloth
+public interface {
+    public func label(): string;
+}
+
+public prototype class () -> Display {
+    public DisplayBase {}
+    public ~DisplayBase {}
+    @Implementation
+    public func label(): string { return "base-label"; }
+}
+
+public class () : DisplayBase {
+    public DisplayChild {}
+    public ~DisplayChild {}
+}
+
+let dc = new DisplayChild();
+Display d = dc;
+println(d.label());   // "base-label" — inherited impl, interface dispatch
+```
+
+Alternatively, a prototype class can leave the interface's methods as `prototype func` declarations, deferring the obligation to the eventual concrete descendant. The choice is one of where the responsibility lives, not what's allowed.
+
 ## Implements list
 
 After the optional base class, a class may declare that it implements one or more interfaces. The implements list is introduced by `->` and lists the interfaces separated by commas:

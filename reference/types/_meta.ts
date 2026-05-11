@@ -5,7 +5,5 @@ export default {
     'boolean-char-byte': 'Boolean, Char, and Byte',
     string: 'String',
     'arrays-and-tuples': 'Arrays and Tuples',
-    nullable: 'Nullable Types',
     'any-and-void': 'Any and Void',
-    generics: 'Generics',
 }

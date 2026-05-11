@@ -24,6 +24,35 @@ Each interface in the list contributes its required members. The class must supp
 
 A single class may implement any number of interfaces. A single interface may be implemented by any number of unrelated classes.
 
+### Interface inheritance
+
+An interface may extend one or more parent interfaces using a `:` clause, mirroring the class-extends syntax. Multiple parents are separated by commas:
+
+```cloth
+public interface Greeter {
+    public func greet(): string;
+}
+
+public interface Polite : Greeter {
+    public func farewell(): string;
+}
+```
+
+A child interface inherits all of its parents' required methods. A class implementing the child must satisfy every transitively-required member — methods declared on the child *and* on every ancestor:
+
+```cloth
+public class () -> Polite {
+    public func greet(): string { return "hello"; }     // from Greeter (transitive)
+    public func farewell(): string { return "goodbye"; } // from Polite (direct)
+}
+```
+
+A class that implements `Polite` is also assignable to a `Greeter` slot — the upcast follows the interface chain. The same applies to interface-to-interface assignment: a `Polite` value can be bound to a `Greeter` variable.
+
+Multiple inheritance is allowed because interfaces are pure contracts with no data; diamond shapes (the same parent reachable through two children) are deduplicated by `(name, parameter types, return type)`. Cycles in the chain — direct or transitive — are rejected with a compile-time error.
+
+A parent listed in the `:` clause must itself be an interface. Naming a class or trait there is a compile-time error.
+
 ## Traits
 
 A *trait* is an attribute-style annotation applied to a declaration. Traits are not contracts in the way interfaces are; they are tags that the compiler and tools recognize, sometimes attaching behavior, sometimes merely informational.
