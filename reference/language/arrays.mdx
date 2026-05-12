@@ -27,6 +27,16 @@ let names = ["Mark", "Mary"];     // string[]
 
 The backing buffer is heap-allocated and zero-initialized by `calloc(n, sizeof(T))`. The slice value (a `{ ptr, i64 }` pair) holds the data pointer and the length.
 
+Literals nest. An array literal whose elements are themselves array literals constructs a nested array of the appropriate depth:
+
+```cloth
+string[][] arrays = [["a", "b"], ["c", "d"]];
+p(arrays[0][1]);                  // "b"
+p(arrays[1][0]);                  // "c"
+```
+
+Each inner literal allocates its own row (one `calloc` per row, same shape as `new T[a][b]`).
+
 ### Empty literal with declared type
 
 When the declared type is array-shaped, an empty `[]` literal adopts that element type:
@@ -216,4 +226,3 @@ A few things are still deliberately out:
 - **No element-type widening between array values.** A value of type `i8[]` cannot be assigned to an `i32[]` variable directly — widening happens only at literal-construction time (against a declared destination type), not as a value-level conversion between two already-built arrays. Converting between element types still requires reallocating and copying.
 - **No built-in slice helpers** (`arr.concat(other)`, `arr.map(f)`, `arr.filter(p)`, …). These belong in the standard library once arrays stabilize, not the core language.
 - **No lifetime tracking for sub-slices.** Sub-slices alias their parent's backing buffer and the compiler does not yet stop you from freeing the parent first. A future borrow-tracker pass will close this gap.
-- **Nested literals stay manual.** `new T[a][b]` exists for heap allocation, but the equivalent fully-initialized nested literal (e.g. `[[1, 2], [3, 4]]` as a single 2D-shaped initializer) still requires writing each row literal explicitly.
