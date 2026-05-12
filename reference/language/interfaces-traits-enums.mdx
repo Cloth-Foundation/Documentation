@@ -178,6 +178,21 @@ public enum (f64 average, i32 age, string name) {
 }
 ```
 
+### Static `values(): EnumType[]`
+
+Every enum also gets a static accessor returning all variants in declaration order:
+
+```cloth
+for (People person in People.values()) {
+    println(person.name());
+}
+
+let n = People.values()::LENGTH;     // 3
+let first = People.values()[0];      // MARK singleton
+```
+
+The returned slice is heap-allocated (one allocation per call) and owned by the caller. Like any owned array, release it with `delete` if you keep it past the current scope; iterating it inline via `for-in` and discarding is fine — the slice falls out of scope normally. See [Arrays](/docs/reference/language/arrays) for the full ownership rules.
+
 ### Switching on an enum
 
 `switch` patterns match enum variants by their case-ref:
@@ -223,6 +238,5 @@ Each fires from a global pre-pass so the structural error is reported from the e
 ### Not yet supported
 
 - **Variants with per-case payload shapes** (sum types like `Some(T)` vs. `None`). The singleton-pointer layout requires every variant to share the same struct, so the user's design choice here was deliberate: data attached to enum cases is *uniform* across all variants. Per-variant shapes would need a separate language construct (e.g. a `union` or `case class` keyword), which is on the backlog but not in this release.
-- **`values(): EnumType[]`** — auto-generation is gated on array literal syntax and `T[]` element indexing landing in the codegen first. The slot is reserved.
 - **Ordinal-based comparison operators** (`<`, `<=`, `>`, `>=`) — currently only `==` and `!=` are wired. Comparing ordinals manually via `getOrdinal()` works in the meantime.
 - **Variant-specific method overrides** (Java's anonymous-class-per-variant). Methods on an enum live once at the type level; per-variant behavior should branch inside the method or be expressed via a separate type.

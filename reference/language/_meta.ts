@@ -7,6 +7,7 @@ export default {
     'functions-and-fragments': 'Functions and Fragments',
     'variables-and-visibility': 'Variables and Visibility',
     nullable: 'Nullability',
+    arrays: 'Arrays',
     casts: 'Casts',
     'control-flow': 'Control Flow',
     operators: 'Operators',
