@@ -3,4 +3,5 @@ export default {
     installation: 'Installation',
     'getting-started': 'Getting Started',
     reference: 'Reference',
+    shuttle: 'Shuttle',
 }
