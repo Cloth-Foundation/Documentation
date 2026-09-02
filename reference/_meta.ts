@@ -1,5 +1,5 @@
 export default {
-    index: 'Reference',
-    types: 'Types',
-    language: 'Language',
+  index: 'Overview',
+  types: 'Types',
+  language: 'Language Rules',
 }

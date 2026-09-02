@@ -1,38 +1,17 @@
-# Hello World
+# Hello, World!
 
-> To complete this tutorial, you will need to have Shuttle and Cloth installed.
+Create a directory named `hello-world` with this structure:
 
-In this tutorial, we will learn how to write a simple program, using Cloth Object
-files and writing source code, which will will then compile to produce an executable
-binary. However, this tutorial is written for beginners, it is not intended to be a
-comprehensive introduction to Cloth itself. The goal is to sketch out the basics of
-Cloth and avoid getting into too much detail.
-
-## Setup
-
-To setup a Cloth project, we will use the Shuttle build system.
-Run the following command in the directory you want your project to exist:
-
-```bash
-shuttle init hello-world
-```
-
-> Spaces are not allowed in project names, neither are capitalized letters.
-
-Running `shuttle init` creates a new directory with the following structure:
-
-```
+```text
 hello-world/
-├── Shuttle.toml
-└── src/
+  Shuttle.toml
+  src/
+    Main.co
 ```
 
-The `src/` directory is where all your source files will live. The `Shuttle.toml`
-file at the root of your project describes how the project should be built.
+## Describe the project
 
-## The Build File
-
-Open `Shuttle.toml`, you will see the following:
+Write this in `Shuttle.toml`:
 
 ```toml
 manifest-version = 1
@@ -40,27 +19,62 @@ manifest-version = 1
 [package]
 name = "hello-world"
 version = "0.1.0"
+source-root = "src"
 
 [executable]
+name = "hello-world"
 entry = "Main.co"
-
-[dependencies]
-stdlib = "2026.0.1A"
-
 ```
 
-his file is the single source of truth for your project. Let's walk through each
-section:
+The source root is relative to the directory containing the manifest. The entry
+file is relative to that source root. Package names use lowercase words separated
+by hyphens; source type names use Cloth identifiers.
 
-- **`[package]`** — the name and version of your project. The version follows a
-`major.minor.patch` format.
-- **`[executable]`** — tells the compiler what to produce.
-  - `entry` is the location your `Main` function lives.
-- **`[dependencies]`** — lists the libraries your project depends on. The `cloth`
-entry refers to the Cloth standard library, which provides built-in types and functions.
+No dependencies are needed for this example.
 
-> The Standard Library is not specifically required, however most projects will
-need it.
+## Write the program
 
-You should not need to modify `build.toml` for this tutorial. The compiler will
-automatically detect the architecture of your computer and use the correct target.
+Put this in `src/Main.co`:
+
+```cloth
+static func Main() {
+  println("Hello, World!");
+}
+```
+
+The filename defines the type `Main`. The function is also named `Main`: it is
+the program's entry point. `static` lets it run without constructing an instance.
+An omitted return type means `void`, so this program finishes with status zero.
+
+`println` writes its argument followed by one line feed. Statements end in
+semicolons, and function bodies use braces.
+
+## Check and run
+
+From `hello-world/`, run:
+
+```sh
+shuttle check
+shuttle run
+```
+
+The program writes:
+
+```text
+Hello, World!
+```
+
+Use `--compiler` with the path to your compiler if it is not on `PATH`.
+Use `shuttle build` to build without running. The executable
+is written beneath `target/x86_64/`.
+
+You can also build this dependency-free program directly:
+
+```sh
+clothc --source-root=src --build=hello src/Main.co
+```
+
+On Windows, use `--build=hello.exe`. Shuttle reads the manifest; direct
+`clothc` commands use only the roots and inputs you supply.
+
+Next, extend the program with [language basics](/docs/getting-started/language-basics).

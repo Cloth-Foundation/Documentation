@@ -1,3 +1,6 @@
 export default {
-    'hello-world': 'Hello, World!',
+  index: 'Overview',
+  'hello-world': 'Hello, World!',
+  'language-basics': 'Language Basics',
+  'working-with-types': 'Working with Types',
 }
