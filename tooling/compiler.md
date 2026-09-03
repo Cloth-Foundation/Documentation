@@ -24,6 +24,9 @@ summary on success, sends diagnostics to standard error, and emits no artifact.
 Checking supports the same source types, including structs, without requiring
 native code generation.
 
+Switch statements are also supported by LLVM/native output, the default
+compiler-inspection mode, and Shuttle's artifact-based checking and builds.
+
 ## Build a native executable
 
 On Linux or macOS:

@@ -61,5 +61,10 @@ Enums have a four-byte value representation. Internal tags follow declaration
 order and are not stable persistence identifiers or a source-level integer API.
 
 Enums cannot declare fields, functions, constructors, explicit discriminants,
-payloads, or a base type. Pattern matching and exhaustiveness checking are not
-currently available; compare named cases with `if`.
+payloads, or a base type. [Switch statements](/docs/reference/language/control-flow#switch-statements)
+must cover every case or provide a default. They work in native builds and with
+source-free package dependencies. Invalid internal tags trap, even with a default.
+Adding a case requires updating switches that have no default. Removing or
+renaming a case requires updating references to it, regardless of defaults.
+Pattern matching remains unsupported; named-case comparisons with `if` are also
+available.
