@@ -50,6 +50,11 @@ Binary arithmetic uses a common operand type when one operand can widen
 losslessly to the other. Compound assignment must preserve the target type;
 `small += wide;` is invalid.
 
+Ordinary integer arithmetic is checked at that exact fixed width. If its result
+cannot be represented, Cloth terminates before storing a partial value. Division
+and remainder also reject a zero divisor. See [operators](/docs/reference/language/operators)
+for the complete operation and failure contract.
+
 Use [checked conversion](/docs/reference/language/casts) for narrowing or changes
 of signedness. [Operators](/docs/reference/language/operators) covers bitwise and
 shift operations; [binary data](/docs/reference/language/binary-data) covers

@@ -36,6 +36,19 @@ Compound assignments evaluate the target once. For a nested struct storage path,
 the owner and index are captured before the right-hand side; the current field
 value is loaded after the right-hand side is evaluated.
 
+Ordinary integer `+`, `-`, `*`, and unary `-` are checked at the resolved fixed
+width. An unrepresentable result terminates with
+`cloth runtime error: integer arithmetic overflow`. Integer `/` and `%` check
+their divisor before the operation and terminate with the corresponding
+division- or remainder-by-zero runtime error. Signed minimum divided or
+remaindered by `-1` is overflow. A leading minus forms a signed literal value,
+so every signed minimum literal remains valid; negating that value later is
+checked.
+
+The same checks apply to integer `++`, `--`, and arithmetic compound assignment,
+and a failing update performs no store. Floating-point arithmetic retains IEEE
+behavior rather than using these integer guards.
+
 ## Bitwise operations and shifts
 
 `&`, `|`, `^`, and `~` accept fixed-width integers, including `byte`.
