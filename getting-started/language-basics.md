@@ -49,6 +49,9 @@ int64 count = 10;
 float ratio = 0.5;  // float is an alias of float32.
 var small = 10i8;   // int8
 var precise = 0.5f32;
+var mask = 0b1111_0000;
+var distance = 1_000_000;
+var tiny = 1.5e-2;
 ```
 
 Integer suffixes are `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, and
@@ -56,6 +59,11 @@ Integer suffixes are `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, and
 [integer types](/docs/reference/types/integers) and
 [floating-point types](/docs/reference/types/floating-point) for range and
 conversion rules.
+
+Binary, octal, and hexadecimal integers use lowercase `0b`, `0o`, and `0x`
+prefixes. Scientific notation uses `e` or `E`. A single underscore may separate
+adjacent digits, including within an exponent. These spellings do not introduce
+new numeric types; normal contextual typing and suffix rules still apply.
 
 ## Functions and flow
 

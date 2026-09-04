@@ -30,6 +30,20 @@ uint64 largest = 18446744073709551615;
 int8 minimum = -128;
 ```
 
+Binary, octal, and hexadecimal integers use lowercase `0b`, `0o`, and `0x`
+prefixes. Hexadecimal digits may use either case. A leading zero without a base
+prefix remains decimal.
+
+```cloth
+var mask = 0b1111_0000;           // 240
+var permissions = 0o755;          // 493
+uint16 color = 0xFF80;
+var decimal = 012;                // 12, not octal
+```
+
+A single underscore may separate adjacent digits in any integer digit run. It
+cannot touch a prefix or suffix, appear twice, or begin or end the run.
+
 An adjacent lowercase suffix fixes the literal's initial type:
 
 | Suffix | Type | Suffix | Type |
@@ -54,6 +68,12 @@ suffix; use a contextual `byte` declaration or `byte(value)`.
 Suffixes are part of the numeric token. They are case-sensitive and must end at
 an identifier boundary: `1I32`, `1i32value`, and `1i8u8` are invalid. There are
 no short aliases such as `1i` or `1u`.
+
+Base-prefixed values are always integer literals. Integer suffixes remain
+available, as in `0b1111u8` and `0xFFFFu16`; floating suffixes are not. Because
+hexadecimal digits are consumed first, `0x1f32` means hexadecimal `1F32`, not
+an `f32` literal. Use an explicit checked conversion such as
+`float32(0x1F32)` when a floating result is intended.
 
 ## Widening and arithmetic
 

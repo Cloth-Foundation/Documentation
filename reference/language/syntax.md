@@ -64,8 +64,17 @@ suffix selects an exact existing numeric type: `42i8`, `42u64`, `0.5f32`, and
 [floating-point numbers](/docs/reference/types/floating-point).
 
 A suffix is part of its numeric token and must end before another identifier
-character. Scientific notation, numeric base prefixes, and digit separators are
-not supported.
+character. Scientific notation uses `e` or `E`, as in `1.5e-2` and `1e3f32`.
+Lowercase `0b`, `0o`, and `0x` prefixes select binary, octal, and hexadecimal
+integer notation. Hexadecimal digits accept either case. A single underscore
+may separate adjacent digits in any digit run: `1_000`, `0xFF_80`, and
+`1.25e1_0` are valid.
+
+Separators cannot touch a prefix, decimal point, exponent marker, exponent sign,
+or suffix, and cannot appear consecutively. Base-prefixed values are integers;
+they do not accept decimal points, exponents, or floating suffixes. Prefixes and
+suffixes are lowercase. `0x1f32` is a hexadecimal integer because hexadecimal
+digits are consumed before suffix recognition.
 
 Strings use double quotes and characters use single quotes. Supported escapes
 are `\n` (line feed), `\r` (carriage return), `\t` (tab), `\0` (zero), `\\`
