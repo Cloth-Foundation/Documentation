@@ -6,12 +6,23 @@ means `float32`, independent of the target.
 ```cloth
 var precise = 0.5;       // float64
 float ratio = 0.5;       // float32
-float64 wider = ratio;  // lossless widening
+var narrow = 0.5f32;     // float32
+var whole = 1f64;        // float64
+float64 wider = ratio;   // lossless widening
 ```
 
 A decimal floating literal defaults to `float64`. When an expected floating
 type is available, the compiler rounds the literal once to that format and
 rejects it if the result is not finite.
+
+The adjacent suffixes `f32` and `f64` fix the initial type. They accept a
+decimal floating core (`1.0f32`) or an integer core (`1f32`); the latter is a
+floating literal directly, not an integer conversion. A suffix-selected value
+does not adopt another contextual type, although `float32` still widens to
+`float64` normally.
+
+Suffix spelling is lowercase and atomic. `1F32`, `1f16`, and `1.0i32` are
+invalid. Scientific notation and digit separators are not currently supported.
 
 ## Conversions
 

@@ -56,10 +56,16 @@ Local variables and parameters have lexical scope regardless of capitalization.
 `//` starts a comment extending to the end of the line. `/* ... */` encloses a
 block comment; block comments do not nest.
 
-Integer literals use decimal digits, such as `42`. Floating literals use digits
-on both sides of a decimal point, such as `0.5`. Scientific notation, numeric
-base prefixes, digit separators, and type suffixes are not supported. Use a typed
-declaration or numeric conversion to choose a numeric type.
+Integer literals use decimal digits, such as `42`. Floating literals ordinarily
+use digits on both sides of a decimal point, such as `0.5`. An adjacent lowercase
+suffix selects an exact existing numeric type: `42i8`, `42u64`, `0.5f32`, and
+`1f64` are valid. The complete suffix sets are documented under
+[integers](/docs/reference/types/integers) and
+[floating-point numbers](/docs/reference/types/floating-point).
+
+A suffix is part of its numeric token and must end before another identifier
+character. Scientific notation, numeric base prefixes, and digit separators are
+not supported.
 
 Strings use double quotes and characters use single quotes. Supported escapes
 are `\n` (line feed), `\r` (carriage return), `\t` (tab), `\0` (zero), `\\`

@@ -25,6 +25,8 @@ a precedence level; parentheses override the grouping.
 Binary numeric operations use a common type when one operand can widen
 losslessly to the other. Compound assignments must retain compatibility with the
 target type. See [numeric conversions](/docs/reference/language/casts).
+Numeric suffixes fix an operand's initial type, so `1i8 + 2i64` uses `int64`;
+they do not introduce a separate arithmetic rule.
 
 `%` and `%=` require integer operands. Strings also support `+` and `+=` with
 another string; these concatenate text without converting other value types.

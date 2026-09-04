@@ -41,12 +41,21 @@ the binding dynamically typed.
 binding while allowing the referenced array's elements to change.
 
 Integer literals normally infer `int32`; decimal floating literals infer
-`float64`. Explicit types can give literals a different numeric context:
+`float64`. Explicit types can give unsuffixed literals a different numeric
+context. A width suffix instead fixes the literal's type:
 
 ```cloth
 int64 count = 10;
 float ratio = 0.5;  // float is an alias of float32.
+var small = 10i8;   // int8
+var precise = 0.5f32;
 ```
+
+Integer suffixes are `i8`, `i16`, `i32`, `i64`, `u8`, `u16`, `u32`, and
+`u64`; floating suffixes are `f32` and `f64`. See
+[integer types](/docs/reference/types/integers) and
+[floating-point types](/docs/reference/types/floating-point) for range and
+conversion rules.
 
 ## Functions and flow
 

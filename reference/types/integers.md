@@ -30,8 +30,30 @@ uint64 largest = 18446744073709551615;
 int8 minimum = -128;
 ```
 
-The literal must fit the selected type. Negative literals cannot initialize
-unsigned types. The compiler diagnoses an out-of-range literal.
+An adjacent lowercase suffix fixes the literal's initial type:
+
+| Suffix | Type | Suffix | Type |
+| --- | --- | --- | --- |
+| `i8` | `int8` | `u8` | `uint8` |
+| `i16` | `int16` | `u16` | `uint16` |
+| `i32` | `int32` | `u32` | `uint32` |
+| `i64` | `int64` | `u64` | `uint64` |
+
+```cloth
+var small = 10i8;                  // int8
+var largest = 18446744073709551615u64;
+int64 widened = 10i8;              // Lossless widening.
+int8 rejected = 10i32;             // Invalid implicit narrowing.
+```
+
+The literal must fit the selected or contextual type. A leading minus remains
+an operator but may form the signed minimum, such as `-128i8`. Negative values
+cannot use unsigned suffixes. `byte` remains distinct from `uint8` and has no
+suffix; use a contextual `byte` declaration or `byte(value)`.
+
+Suffixes are part of the numeric token. They are case-sensitive and must end at
+an identifier boundary: `1I32`, `1i32value`, and `1i8u8` are invalid. There are
+no short aliases such as `1i` or `1u`.
 
 ## Widening and arithmetic
 

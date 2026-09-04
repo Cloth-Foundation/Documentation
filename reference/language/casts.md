@@ -14,8 +14,9 @@ An existing numeric value converts implicitly only through these rules:
 | `float32` | `float64` |
 
 Equal-width signed and unsigned types do not implicitly convert. Neither do
-integers and floating-point types. Numeric literals may instead adopt an expected
-type directly when representable.
+integers and floating-point types. Unsuffixed numeric literals may instead adopt
+an expected type directly when representable. A suffixed literal already has
+the exact type named by its suffix and follows the ordinary widening table.
 
 ## Explicit numeric conversion
 
@@ -45,6 +46,11 @@ The checked form does not wrap, saturate, reinterpret bits, or convert to
 A literal conversion is checked at compile time and adopts its destination type
 directly. For example, `int8(127)` is valid and `int8(128)` is a compile-time
 error.
+
+A suffix fixes the conversion's source type. `int64(1i8)` converts an `int8`
+value; `int8(128i16)` is rejected because the checked conversion cannot
+represent the `int16` value. Wrapping and saturating conversions likewise
+receive the suffix-selected source type.
 
 ## Wrapping and saturating integer conversion
 

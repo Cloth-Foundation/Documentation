@@ -38,7 +38,9 @@ users. See [nullability](/docs/reference/language/nullable).
 `var` infers a local's exact type from its initializer. It needs a value:
 `var value = null;` and an initializer returning `void` are invalid.
 
-Numeric literals can adopt an expected type when representable. Existing numeric
-values widen implicitly only through specified lossless conversions. Reference
-widening follows class inheritance, declared interfaces, and `object`.
-Arrays remain invariant. See [conversions](/docs/reference/language/casts).
+Unsuffixed numeric literals can adopt an expected type when representable.
+Suffixes such as `i8`, `u64`, and `f32` select an exact initial type instead.
+Existing numeric values widen implicitly only through specified lossless
+conversions. Reference widening follows class inheritance, declared interfaces,
+and `object`. Arrays remain invariant. See
+[conversions](/docs/reference/language/casts).
