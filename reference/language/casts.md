@@ -39,12 +39,34 @@ constructor.
 | `float64` to `float32` | Round once; finite overflow traps, NaN and infinities are preserved |
 
 Explicit floating conversions accept underflow and ordinary precision loss.
-No numeric conversion wraps, saturates, reinterprets bits, or converts to
+The checked form does not wrap, saturate, reinterpret bits, or convert to
 `bool`.
 
 A literal conversion is checked at compile time and adopts its destination type
 directly. For example, `int8(127)` is valid and `int8(128)` is a compile-time
 error.
+
+## Wrapping and saturating integer conversion
+
+Integer targets also provide explicit conversion modes:
+
+```cloth
+int8 wrapped = int8::wrap(300);       // 44
+int8 limited = int8::sat(300);        // 127
+uint8 residue = uint8::wrap(-1);      // 255
+uint8 nonnegative = uint8::sat(-1);   // 0
+```
+
+`Target::wrap(value)` computes the mathematical value modulo `2` raised to the
+target width. A signed target interprets the resulting bits as two's-complement.
+`Target::sat(value)` clamps the mathematical value to the target's inclusive
+minimum and maximum.
+
+The target and operand must both be non-nullable integer types. `int`, `uint`,
+and `byte` are accepted according to their ordinary aliases and widths. The
+operand is evaluated exactly once without adopting the target type, so
+`int8::wrap(300)` converts the default `int32` literal. These modes do not trap
+for range; the ordinary `Target(value)` form remains the checked default.
 
 ## Reference widening
 

@@ -43,6 +43,8 @@ Initializers may use scalar expressions and references to other constants:
 static final int32 BufferSize = 4 * 1024;
 static final int32 LastIndex = BufferSize - 1;
 static final int8 Minimum = int8(-128);
+static final int8 Wrapped = int8::wrap(300);
+static final int8 Limited = int8::sat(300);
 static final bool Enabled = BufferSize > 0 && LastIndex < BufferSize;
 static final float32 Third = 1.0 / 3.0;
 ```
@@ -56,12 +58,14 @@ Dependencies must be acyclic, including references in skipped boolean operands.
 All constants are checked, even unused or private ones. A constant reference
 keeps its declared type; narrowing still requires an explicit checked conversion.
 
-Arithmetic, comparisons, boolean operations, integer bitwise operations, and
-built-in numeric conversions are allowed. Integer arithmetic overflow, evaluated
-division by zero, invalid shifts, and failed conversions are errors. Floating
-operations round to binary32/binary64 with ties to even; evaluated results must
-be finite. Signed zero and subnormals are preserved. Arithmetic underflow may
-produce zero, but a nonzero literal that rounds to zero is out of range.
+Arithmetic, comparisons, boolean operations, integer bitwise operations, checked
+numeric conversions, and integer `wrap`/`sat` conversions are allowed. Integer
+arithmetic overflow, evaluated division by zero, invalid shifts, and failed
+checked conversions are errors. Wrapping and saturating conversion modes do not
+fail for range. Floating operations round to binary32/binary64 with ties to even;
+evaluated results must be finite. Signed zero and subnormals are preserved.
+Arithmetic underflow may produce zero, but a nonzero literal that rounds to zero
+is out of range.
 
 Each evaluated operation must be valid, not just the final result. For example,
 `-(-(-2147483648))` is invalid as an `int32` constant: the middle negation
@@ -70,7 +74,9 @@ overflows even though cancelling the signs would produce a value that fits.
 
 Boolean evaluation short-circuits: `false && (1 / 0 == 0)` is valid. Skipped
 operands must still have eligible syntax and types, valid literals, and acyclic
-dependencies. Calls and meta operations are not constant expressions.
+dependencies. Declared function calls and value-receiver meta operations are not
+constant expressions; integer target conversion modes are the explicit
+meta-operation exception.
 
 Mutable static fields, reference-valued static fields, aggregate constants,
 local constant propagation, and dynamic initialization remain unsupported.

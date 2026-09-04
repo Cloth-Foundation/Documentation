@@ -1,7 +1,7 @@
 # Meta operations
 
-Declared members use `.`. Language-defined meta operations use `::` and
-depend on the receiver's semantic type.
+Declared members use `.`. Language-defined meta operations use `::` and depend
+on a receiver's semantic type or an explicitly named primitive target type.
 
 ```cloth
 string text = "Cloth";
@@ -10,8 +10,22 @@ println(text::typeName);
 ```
 
 Meta names are case-sensitive and do not follow member visibility rules.
-They cannot be shadowed, overloaded, or assigned. The receiver is evaluated
+They cannot be shadowed, overloaded, or assigned. A value receiver is evaluated
 once and must be non-null.
+
+## Integer conversion modes
+
+Integer target types provide two callable meta operations:
+
+```cloth
+int8 wrapped = int8::wrap(300);
+int8 limited = int8::sat(300);
+```
+
+`wrap` reduces the operand modulo the target bit width. `sat` clamps it to the
+target range. Both require an integer operand, evaluate it once, and return the
+named target type. See [conversions and casts](/docs/reference/language/casts)
+for signedness and range behavior.
 
 ## Queries
 
