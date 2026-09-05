@@ -31,6 +31,23 @@ func Label(bool enabled): string {
 Abstract functions and interface contracts are the specific bodyless forms.
 An ordinary concrete function requires a block.
 
+## Error contracts
+
+Place `throws` after the optional result type. It names the error types that may
+leave the function:
+
+```cloth
+func Load(): object throws IoError, ParseError {
+  return ReadSource();
+}
+```
+
+A listed base error covers its derived errors. Public functions must explicitly
+cover every error they can expose. Private functions may omit the clause and
+have their minimal transitive set inferred. Calls need no marker; an error is
+automatically propagated. Throws sets are part of function contracts but do not
+create overloads. See [memory and errors](/docs/reference/language/memory-and-errors).
+
 ## Instance and static calls
 
 Functions are instance members unless marked `static`. An instance function
@@ -45,8 +62,8 @@ See [static members](/docs/reference/language/static-members) and
 
 ## Overloads
 
-Overloads differ by canonical parameter types. Return types, parameter names,
-`final`, and static ownership do not create distinct overloads. Aliases such
+Overloads differ by canonical parameter types. Return types, throws sets,
+parameter names, `final`, and static ownership do not create distinct overloads. Aliases such
 as `int` and `int32` are the same type. Overloads cannot differ only by
 reference nullability.
 

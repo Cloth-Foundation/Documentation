@@ -15,5 +15,5 @@ export default {
   'meta-operations': 'Meta Operations',
   'binary-data': 'Binary Data',
   printing: 'Printing',
-  'memory-and-errors': 'Memory and Runtime Failures',
+  'memory-and-errors': 'Memory and Errors',
 }

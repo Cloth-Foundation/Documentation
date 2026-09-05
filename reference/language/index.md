@@ -20,5 +20,5 @@ Use [operators](/docs/reference/language/operators),
 [meta operations](/docs/reference/language/meta-operations),
 [binary data](/docs/reference/language/binary-data), and
 [printing](/docs/reference/language/printing) as lookup pages.
-[Memory and runtime failures](/docs/reference/language/memory-and-errors)
-describes lifetime management and checked failures.
+[Memory and errors](/docs/reference/language/memory-and-errors) describes
+managed lifetime, typed propagation, and terminal runtime failures.

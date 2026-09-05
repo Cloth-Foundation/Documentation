@@ -29,12 +29,12 @@ class {
 }
 ```
 
-Use `interface { ... }`, `enum { ... }`, or `struct { ... }` for the other
-file kinds. Never repeat the filename as `class User { ... }`.
+Use `interface { ... }`, `enum { ... }`, `struct { ... }`, or `error { ... }`
+for the other file kinds. Never repeat the filename as `class User { ... }`.
 Imports must come first; an explicit envelope consumes the rest of the file.
 
-An explicit class envelope is required for inheritance, interface conformance,
-or an `abstract` or `sealed` modifier.
+An explicit class or error envelope is required for inheritance, interface
+conformance, or an `abstract` or `sealed` modifier.
 
 Nested type declarations are not currently supported. Put each type in its own
 file. There are no module declarations, annotations, traits, fragments, generic
