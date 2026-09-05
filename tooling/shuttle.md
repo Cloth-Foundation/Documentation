@@ -77,7 +77,8 @@ text_utils = { path = "../text-utils" }
 Each relative path names a directory containing its own `Shuttle.toml`.
 Sibling dependency paths may leave the current package directory.
 Aliases begin with a lowercase letter and continue with lowercase letters,
-digits, or underscores; keywords are invalid aliases.
+digits, or underscores; keywords are invalid aliases. The alias `cloth` is
+reserved and cannot appear in a user manifest.
 
 In Cloth source:
 
@@ -91,11 +92,27 @@ package name. Only direct dependencies are visible; transitive dependencies
 are not automatically imported. A dependency's own executable does not supply
 the application's entry point.
 
+## Standard library
+
+Shuttle automatically adds the standard library paired with the selected
+compiler as the direct dependency `cloth` for every package. Do not add it to
+`[dependencies]`.
+
+Standard-library types are still imported explicitly:
+
+```cloth
+import cloth.math::Math;
+```
+
+There is no general prelude or implicit wildcard import. The compiler and its
+adjacent toolchain metadata select one exact compatible library; Shuttle does
+not search the current directory, user home, or network for an alternative.
+
 ## Current boundary
 
-Local dependency graphs and compiled artifact reuse are supported. Remote
-registries, version solving, Git dependencies, manifest workspaces, and a
-distributed standard library are not currently provided.
+Local dependency graphs, compiler-paired standard-library injection, and
+compiled artifact reuse are supported. Remote registries, version solving, Git
+dependencies, and manifest workspaces are not currently provided.
 
 Manifest schema, process protocol, and compiled artifact versions are distinct.
 See [compatibility](/docs/tooling/compatibility) when updating a toolchain.

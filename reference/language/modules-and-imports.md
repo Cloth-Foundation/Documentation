@@ -83,3 +83,18 @@ Aliases cannot collide with local top-level source packages.
 Manifest package names and versions do not appear in source import syntax.
 They contribute to compiled type identity; an import alias does not change it.
 See [Shuttle projects](/docs/tooling/shuttle) for local dependency configuration.
+
+## Standard library imports
+
+The official standard library uses the reserved dependency root `cloth`.
+Shuttle supplies the exact library paired with the selected compiler, so it is
+never listed in a project's manifest. Its types remain explicit imports:
+
+```cloth
+import cloth.math::Math;
+```
+
+For example, `std/src/math/Math.co` has the canonical identity
+`cloth.math.Math`. `cloth`, including case-only variants, cannot be used as a
+user source root, dependency alias, or replacement package. There is no
+implicit wildcard import or general prelude.
