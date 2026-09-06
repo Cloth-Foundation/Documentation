@@ -47,7 +47,8 @@ Name resolution considers these scopes in order:
 3. Public types in the current source package.
 4. Explicit imports and aliases.
 5. Wildcard imports.
-6. Core symbols.
+6. Public file types beneath `cloth.lang`.
+7. Core symbols.
 
 An explicit import wins over a wildcard. Conflicting wildcard names are ambiguous
 unless an explicit import or alias resolves them.
@@ -88,7 +89,13 @@ See [Shuttle projects](/docs/tooling/shuttle) for local dependency configuration
 
 The official standard library uses the reserved dependency root `cloth`.
 Shuttle supplies the exact library paired with the selected compiler, so it is
-never listed in a project's manifest. Its types remain explicit imports:
+never listed in a project's manifest.
+
+Public file types recursively beneath `cloth.lang` form Cloth's prelude and are
+available by short name without an import. The initial prelude contains
+`cloth.lang.errors.ArgumentError` and `cloth.lang.errors.StateError`. Public
+short names must be unique across the prelude tree. Other library areas remain
+explicit imports:
 
 ```cloth
 import cloth.math::Math;
@@ -96,5 +103,6 @@ import cloth.math::Math;
 
 For example, `std/src/math/Math.co` has the canonical identity
 `cloth.math.Math`. `cloth`, including case-only variants, cannot be used as a
-user source root, dependency alias, or replacement package. There is no
-implicit wildcard import or general prelude.
+user source root, dependency alias, or replacement package. An explicit import
+such as `import cloth.lang.errors::ArgumentError;` remains valid, and higher-
+priority local or imported bindings intentionally shadow its short name.

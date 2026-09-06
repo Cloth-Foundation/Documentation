@@ -40,6 +40,29 @@ implement interfaces, derive from one error, and use capitalization for
 visibility. Construct an error with its file type name; Cloth does not use
 `new`.
 
+The standard-library prelude provides two general errors:
+
+- `ArgumentError` reports a value a caller is not permitted to supply.
+- `StateError` reports an operation that is invalid for the receiver's current
+  state.
+
+Their canonical package is `cloth.lang.errors`; recursive prelude lookup keeps
+the short names available without an import.
+
+Both provide `()` and `(string message)` constructors and may be extended by
+more specific application errors. They require no import:
+
+```cloth
+func SetLimit(int32 limit) throws ArgumentError {
+  if (limit < 0) {
+    throw ArgumentError("limit must be non-negative");
+  }
+}
+```
+
+Use a specific error when the API has a more precise failure contract. These
+types do not replace compiler-owned `Error`, `DivisionByZero`, or runtime traps.
+
 Use `throw` to complete the current callable with a non-null error. A callable
 that can expose an error declares its set after the return type:
 

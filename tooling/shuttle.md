@@ -98,15 +98,17 @@ Shuttle automatically adds the standard library paired with the selected
 compiler as the direct dependency `cloth` for every package. Do not add it to
 `[dependencies]`.
 
-Standard-library types are still imported explicitly:
+The `cloth.lang.errors` types `ArgumentError` and `StateError` belong to the
+recursive `cloth.lang` prelude and need no import. Other library areas remain
+explicit:
 
 ```cloth
 import cloth.math::Math;
 ```
 
-There is no general prelude or implicit wildcard import. The compiler and its
-adjacent toolchain metadata select one exact compatible library; Shuttle does
-not search the current directory, user home, or network for an alternative.
+The compiler and its adjacent toolchain metadata select one exact compatible
+library; Shuttle does not search the current directory, user home, or network
+for an alternative.
 
 ## Current boundary
 
