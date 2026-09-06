@@ -27,6 +27,20 @@ target range. Both require an integer operand, evaluate it once, and return the
 named target type. See [conversions and casts](/docs/reference/language/casts)
 for signedness and range behavior.
 
+## Primitive parsing
+
+Primitive target types provide `parse` as a callable meta operation:
+
+```cloth
+int32 count = int32::parse("2_048");
+float ratio = float::parse("6.25e-2");
+```
+
+It consumes a complete non-null string, returns the exact target type, and may
+throw `ParseError`. It is runtime-only. See
+[input and primitive parsing](/docs/reference/language/input-and-parsing) for
+the supported targets, grammar, and exact failures.
+
 ## Queries
 
 Queries are read-only values and do not take parentheses.

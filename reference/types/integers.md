@@ -104,3 +104,8 @@ the target width, and `Target::sat(value)` clamps to the target range.
 [Operators](/docs/reference/language/operators) covers bitwise and shift
 operations; [binary data](/docs/reference/language/binary-data) covers explicit
 byte order. `bool` and `char` are not integer operands.
+
+Use `T::parse(text)` when the value comes from runtime text. It accepts the
+integer bases and separator rules above, consumes the complete string, and
+throws `ParseError` for malformed or out-of-range input. See
+[input and primitive parsing](/docs/reference/language/input-and-parsing).

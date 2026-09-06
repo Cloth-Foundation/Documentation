@@ -40,16 +40,19 @@ implement interfaces, derive from one error, and use capitalization for
 visibility. Construct an error with its file type name; Cloth does not use
 `new`.
 
-The standard-library prelude provides two general errors:
+The standard-library prelude provides four general and operation-specific
+errors:
 
 - `ArgumentError` reports a value a caller is not permitted to supply.
 - `StateError` reports an operation that is invalid for the receiver's current
   state.
+- `IoError` reports a failure in a portable I/O operation.
+- `ParseError` reports malformed or unrepresentable primitive text.
 
 Their canonical package is `cloth.lang.errors`; recursive prelude lookup keeps
 the short names available without an import.
 
-Both provide `()` and `(string message)` constructors and may be extended by
+All four provide `()` and `(string message)` constructors and may be extended by
 more specific application errors. They require no import:
 
 ```cloth

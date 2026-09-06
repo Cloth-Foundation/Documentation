@@ -22,3 +22,5 @@ Use [operators](/docs/reference/language/operators),
 [printing](/docs/reference/language/printing) as lookup pages.
 [Memory and errors](/docs/reference/language/memory-and-errors) describes
 managed lifetime, typed propagation, and terminal runtime failures.
+[Input and primitive parsing](/docs/reference/language/input-and-parsing)
+covers `Console.ReadLine` and strict `T::parse(text)` conversion.

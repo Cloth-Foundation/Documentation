@@ -16,6 +16,7 @@ if (ready) {
 Logical operations short-circuit. Numeric values do not convert to `bool`.
 Nullable-reference presence is also accepted in conditions, as explained under
 [nullability](/docs/reference/language/nullable).
+`bool::parse(text)` accepts exactly `true` or `false`.
 
 ## Character
 
@@ -30,6 +31,7 @@ println(letter);
 Character output encodes the scalar as UTF-8. An invalid Unicode scalar traps.
 `char` is separate from the numeric integer types and cannot be used as an
 integer operand for bitwise or byte-order operations.
+`char::parse(text)` accepts exactly one Unicode scalar value.
 
 ## Byte
 
@@ -45,3 +47,6 @@ println(bytes::readInt32LittleEndian(0));
 
 See [binary data](/docs/reference/language/binary-data) for range checks and the
 complete set of read and write operations.
+Use `byte::parse(text)` for strict text conversion, including decimal and
+prefixed integer syntax. See
+[input and primitive parsing](/docs/reference/language/input-and-parsing).

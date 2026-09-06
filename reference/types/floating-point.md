@@ -62,6 +62,11 @@ ordinary precision loss are accepted for explicit conversions.
 See [conversions and casts](/docs/reference/language/casts) for the distinction
 between runtime conversion and compile-time literal checking.
 
+Use `float32::parse(text)`, `float64::parse(text)`, or the `float` alias for
+strict runtime text conversion. Parsing consumes the complete string and throws
+`ParseError` for malformed or unrepresentable values. See
+[input and primitive parsing](/docs/reference/language/input-and-parsing).
+
 ## Output
 
 `print` and `println` use locale-independent, shortest round-trippable decimal
