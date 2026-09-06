@@ -33,19 +33,21 @@ On Linux or macOS:
 
 ```sh
 clothc --source-root=src --build=program src/Main.co
-./program
+./program first "two words"
 ```
 
 On Windows PowerShell:
 
 ```powershell
 clothc --source-root=src --build=program.exe src/Main.co
-.\program.exe
+.\program.exe first "two words"
 ```
 
 Native output currently requires the x86-64 target, LLVM `llc`, and a configured
 C++ linker driver. The program must have exactly one eligible public
-`static func Main()`, with a void or `int32` return.
+`static func Main`, with a void or `int32` return. It may take no parameters or
+one non-null `string[]` containing the application arguments. The executable
+name is not included.
 
 ## Emit LLVM IR
 

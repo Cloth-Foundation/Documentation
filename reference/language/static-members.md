@@ -91,8 +91,8 @@ objects.
 
 ## Program entry point
 
-A native program needs exactly one eligible public static `Main` with no
-parameters:
+A native program needs exactly one eligible public static `Main`. It may take
+no parameters:
 
 ```cloth
 static func Main(): int32 {
@@ -101,6 +101,18 @@ static func Main(): int32 {
 }
 ```
 
+Or it may take one non-null `string[]` of non-null application arguments:
+
+```cloth
+static func Main(string[] arguments) {
+  for (string argument in arguments) {
+    println(argument);
+  }
+}
+```
+
 An omitted return annotation or explicit `void` produces status zero.
 An `int32` return supplies the process status. The entry point runs without
-allocating an instance.
+allocating an instance. The argument array excludes the executable name and
+preserves argument order, empty values, whitespace, dashes, and Unicode. The
+runtime owns the array and strings for the complete invocation.

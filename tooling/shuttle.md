@@ -43,6 +43,18 @@ shuttle build
 shuttle run
 ```
 
+Pass application arguments to `run` after an explicit delimiter:
+
+```sh
+shuttle run -- first "two words" "" --flag
+```
+
+Only `run` accepts these values. Everything after `--` belongs to the Cloth
+program, including empty and option-looking arguments. The executable name is
+not included in `Main(string[] arguments)`, and `shuttle run --` supplies an
+empty array. Shuttle preserves argument boundaries and host-native values; the
+compiler runtime validates and converts them to Cloth Unicode strings.
+
 These commands discover `clothc` beside Shuttle or on `PATH`. The `--compiler`
 option instead selects an explicit filesystem path, relative to the current
 directory or absolute; it does not search `PATH` for the supplied name.

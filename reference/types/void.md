@@ -27,4 +27,5 @@ Constructor bodies follow void return rules, while a constructor call produces
 the newly constructed class reference or struct value.
 
 A native `static func Main()` or `static func Main(): void` produces process
-status zero. A `static func Main(): int32` supplies the status explicitly.
+status zero. The same rule applies to `Main(string[] arguments)`. An `int32`
+entry supplies the status explicitly.
