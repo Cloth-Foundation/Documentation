@@ -27,6 +27,19 @@ String literals must decode to well-formed UTF-8. Cloth preserves the decoded
 Unicode scalars without normalization, so different scalar sequences can compare
 unequal even if they appear visually identical.
 
+The escape `\u{HEX}` inserts one Unicode scalar using one through six
+hexadecimal digits. Hexadecimal letters may use either case, and leading zeroes
+are allowed:
+
+```cloth
+string thread = "\u{1F9F5}"; // Same content as "🧵".
+string nul = "A\u{0}B";      // U+0000 is ordinary string content.
+```
+
+Signs, spaces, underscores, prefixes, missing braces, surrogates, and values
+above U+10FFFF are rejected. The existing `\n`, `\r`, `\t`, `\0`, `\\`, `\"`,
+and `\'` escapes remain available.
+
 | Expression | Result |
 | --- | --- |
 | `text::length` | `int32` count of Unicode scalars |
@@ -48,6 +61,46 @@ if (text != null) {
 }
 ```
 
-String indexing, slicing, iteration, interpolation, searching, and implicit
-formatting are not currently supported. To print separate values, make separate
+## Scalar indexing
+
+Indexing counts Unicode scalars from zero and returns a `char` value:
+
+```cloth
+string text = "A🧵Z";
+char first = text[0];
+char thread = text[1];
+char last = text[2];
+```
+
+The index must be assignable to `int32`. A negative index or an index greater
+than or equal to `text::length` terminates with
+`cloth runtime error: string index is out of bounds`. The result is not a
+writable location because strings are immutable. A nullable string must first
+be narrowed or asserted non-null.
+
+Indexing is based on scalars, not UTF-8 bytes. It uses constant auxiliary space
+and may scan the string bytes to reach the requested scalar.
+
+## Scalar iteration
+
+`for in` visits Unicode scalars in source order:
+
+```cloth
+for (var scalar in text) {
+  println(scalar);
+}
+
+for (final char scalar in text) {
+  println(scalar);
+}
+```
+
+`var` infers `char`. The string expression is evaluated once, an empty string
+executes no body, `continue` advances to the next scalar, and `break` stops
+without decoding another scalar. Reassigning a non-final iteration variable
+changes only that local value. A complete traversal is linear in the string's
+UTF-8 byte length and allocates no managed storage for the loop itself.
+
+Slicing, interpolation, searching, and implicit formatting are not currently
+supported. To print separate values, make separate
 [printing calls](/docs/reference/language/printing).

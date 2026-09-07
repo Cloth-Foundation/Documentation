@@ -79,8 +79,10 @@ digits are consumed before suffix recognition.
 Strings use double quotes and characters use single quotes. Supported escapes
 are `\n` (line feed), `\r` (carriage return), `\t` (tab), `\0` (zero), `\\`
 (backslash), `\"` (double quote), and `\'` (single quote). A literal cannot
-contain an unescaped line break. See [strings](/docs/reference/types/string) for
-UTF-8 content rules.
+contain an unescaped line break. `\u{HEX}` inserts one Unicode scalar and uses
+one through six hexadecimal digits; surrogates and values above U+10FFFF are
+invalid. A raw character literal must contain exactly one UTF-8 scalar. See
+[strings](/docs/reference/types/string) for complete UTF-8 content rules.
 
 ## Statements and expressions
 
@@ -95,6 +97,22 @@ static func Main() {
   }
 }
 ```
+
+`for in` declares one local binding and accepts arrays or non-null strings:
+
+```cloth
+for (var item in values) {
+  println(item);
+}
+
+for (final char scalar in text) {
+  println(scalar);
+}
+```
+
+String iteration visits Unicode scalars. Array iteration retains its element
+type. A classical `for (initializer; condition; updates) { ... }` remains
+available for explicit counter loops.
 
 Calls use parentheses, declared members use `.`, and language-defined
 [meta operations](/docs/reference/language/meta-operations) use `::`.
