@@ -101,6 +101,27 @@ without decoding another scalar. Reassigning a non-final iteration variable
 changes only that local value. A complete traversal is linear in the string's
 UTF-8 byte length and allocates no managed storage for the loop itself.
 
-Slicing, interpolation, searching, and implicit formatting are not currently
-supported. To print separate values, make separate
+## Slicing
+
+`slice(start, end)` selects a half-open range of Unicode scalars and returns a
+new immutable `string`:
+
+```cloth
+string text = "A🧵BC";
+string middle = text::slice(1, 3); // "🧵B"
+```
+
+Both bounds must be assignable to `int32`. A slice is valid when
+`0 <= start <= end <= text::length`; equal bounds return an empty string.
+Bounds count Unicode scalars rather than UTF-8 bytes, so combining marks remain
+separate positions and embedded U+0000 remains ordinary data.
+
+The receiver, start, and end expressions evaluate left to right exactly once.
+Invalid bounds terminate with
+`cloth runtime error: string slice is out of bounds`. A nullable receiver must
+first be narrowed or asserted non-null. The result is a value, not writable
+storage or a view.
+
+Interpolation, searching, and implicit formatting are not currently supported.
+To print separate values, make separate
 [printing calls](/docs/reference/language/printing).

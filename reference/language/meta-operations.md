@@ -41,6 +41,20 @@ throw `ParseError`. It is runtime-only. See
 [input and primitive parsing](/docs/reference/language/input-and-parsing) for
 the supported targets, grammar, and exact failures.
 
+## String slicing
+
+String values provide one callable meta operation:
+
+```cloth
+string middle = "A🧵BC"::slice(1, 3);
+```
+
+`slice` uses half-open Unicode-scalar bounds and returns an immutable non-null
+`string`. It is value-only, requires exactly two `int32`-compatible bounds, and
+cannot be referenced without calling it. See
+[strings](/docs/reference/types/string) for bounds, evaluation, and failure
+behavior.
+
 ## Queries
 
 Queries are read-only values and do not take parentheses.
@@ -58,7 +72,16 @@ Classes report qualified source identities. Strings report `string`;
 arrays report the erased name `array`. These names are diagnostic text,
 not serialization identifiers, memory addresses, or a reflection API.
 
-Narrow a nullable receiver before querying it. Safe meta access is unsupported.
+A nullable receiver can use `?::` with these non-callable queries. The receiver
+is evaluated once; absence returns null and presence produces the query result:
+
+```cloth
+int32? count = text?::length;
+string? kind = value?::typeName;
+```
+
+Callable meta operations do not support `?::`; narrow, coalesce, or assert the
+receiver before calling one.
 
 ## Byte-order operations
 

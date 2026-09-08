@@ -48,8 +48,9 @@ A static enum constant directly names a case:
 static final Status Initial = Status.Pending;
 ```
 
-Arrays of enums support ordinary indexing, mutation, and iteration.
-`Status?` is invalid, while `Status[]?` is a nullable array reference.
+Arrays of enums support ordinary indexing, mutation, and iteration. `Status?`
+is an inline tagged nullable enum; `Status[]?` is a nullable array reference,
+and `Status?[]` is a non-null array of nullable enum elements.
 
 ## Output and limits
 

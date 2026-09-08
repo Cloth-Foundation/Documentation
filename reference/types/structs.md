@@ -87,9 +87,11 @@ preserved. Static fields and padding do not participate.
 ## Restrictions
 
 Structs do not inherit, implement interfaces, widen to `object`, support
-reference `is`/`as`, or provide truthiness or arithmetic. `Point?` is
-invalid; `Point[]?` is valid. Instance calls are direct, with no virtual,
-abstract, or final-override functions.
+reference `is`/`as`, or provide arithmetic. `Point?` is an inline tagged value;
+it is not boxed and does not acquire object behavior. A nullable struct tests
+presence in a condition and supports safe fields, safe instance calls, `??`,
+and `!`. Instance calls are direct, with no virtual, abstract, or final-override
+functions.
 
 Inline field cycles are rejected. A class or array reference breaks such a cycle
 because it does not embed the referenced value's layout.

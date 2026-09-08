@@ -19,8 +19,9 @@ trap on both reads and writes.
 Elements are evaluated from left to right. Numeric literals can use an explicit
 array element type, as in `int64[] values = [1, 2, 3];`.
 
-Reference elements infer a type from the first non-null element. Null or nullable
-elements make it nullable. Different managed-reference types join at `object`.
+Elements infer a type from the first non-null element. Null or nullable elements
+make that element type nullable. Different managed-reference types join at
+`object`.
 
 ```cloth
 string?[] labels = ["first", null];
@@ -57,9 +58,10 @@ values[0] = 3;
 | `User[]?` | Nullable array of non-null users |
 | `User?[]?` | Nullable array of nullable users |
 
-Narrow a nullable array before indexing, querying length, or iterating.
-`Status[]?` and `Point[]?` are valid even though enum and struct elements
-cannot themselves be nullable.
+Narrow a nullable array before indexing or iterating. Its length may be queried
+safely with `values?::length`.
+Primitive, enum, struct, and reference element types may all be nullable, so
+`int32?[]`, `Status?[]`, and `Point?[]` are valid.
 
 ## Iteration
 
