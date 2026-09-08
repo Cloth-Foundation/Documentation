@@ -32,6 +32,30 @@ Empty literals and null-only literals are unsupported, including with an explici
 array type. Repeated `[]` suffixes, resizable arrays, slices, and multidimensional
 array syntax are also unsupported.
 
+## Runtime-sized construction
+
+Use `T[:length]` when the fixed length is known only while the program is
+running:
+
+```cloth
+int32 count = ReadCount();
+int32[] values = int32[:count];
+User?[] users = User?[:count];
+```
+
+The length expression is evaluated once and must be implicitly compatible with
+`int32`. Zero is valid. A negative constant is rejected by the compiler; a
+negative runtime value terminates with `cloth runtime error: array length is
+negative`.
+
+Integer and floating elements start at zero, `bool` starts at `false`, and
+`char` starts at U+0000. Nullable elements start absent. Non-null references,
+enums, structs, and nested arrays cannot be constructed this way because Cloth
+does not invent a default object, enum case, or struct value.
+
+The result is an ordinary non-null `T[]`. Its length never changes, while its
+elements retain normal checked reads and writes.
+
 ## References and copying
 
 Array assignment copies the reference. Equality compares array identity, not
