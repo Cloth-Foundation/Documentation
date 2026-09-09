@@ -20,6 +20,41 @@ empty string for an empty line, and returns `null` at end of input. Redirected
 input is decoded as strict UTF-8; malformed input and host read failures throw
 `IoError`.
 
+## Binary file input
+
+Import `cloth.io::File` and call `File.ReadBytes(path)` to read a regular file:
+
+```cloth
+import cloth.io::File;
+
+static func Load(string path): byte[] throws IoError {
+  return File.ReadBytes(path);
+}
+```
+
+`File.ReadBytes(string): byte[] throws IoError` reads from byte offset zero to
+end-of-file and returns a fresh array containing the exact bytes. It does not
+decode text, remove a byte-order mark, translate line endings, append a
+terminator, or reject embedded zero and malformed UTF-8 bytes. An empty file
+returns an empty array.
+
+Relative paths use the running program's current working directory. Cloth does
+not normalize paths or infer extensions. Windows uses native Unicode paths;
+POSIX hosts use the string's UTF-8 bytes. The initial whole-file API accepts at
+most 64 MiB.
+
+Failures throw `IoError` with one of these stable messages:
+
+- `file path contains U+0000`
+- `could not open file`
+- `file is not a regular file`
+- `could not read file`
+- `file is too large`
+
+The messages do not expose the requested path, localized host text, or a native
+error number. File writing, directory operations, streams, path objects, and
+text decoding are not part of this API.
+
 ## Primitive parsing
 
 Use `T::parse(text)` to convert a complete, non-null string to a primitive:
