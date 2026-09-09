@@ -81,17 +81,19 @@ declaration order, including private fields. Nested structs compare recursively,
 strings by content, and other references by identity. Floating NaN behavior is
 preserved. Static fields and padding do not participate.
 
-`println(point)` prints `<qualified.TypeName>`.
-`point::typeName` returns that qualified name. Neither operation boxes the value.
+`println(point)` prints `<qualified.TypeName>` and `point::typeName` returns that
+qualified name without boxing. Converting a struct to `object` copies its inline
+payload into a managed box. Calling `ToString()` through that object produces
+`qualified.TypeName{Field=value, ...}` in declaration order.
 
 ## Restrictions
 
-Structs do not inherit, implement interfaces, widen to `object`, support
-reference `is`/`as`, or provide arithmetic. `Point?` is an inline tagged value;
-it is not boxed and does not acquire object behavior. A nullable struct tests
-presence in a condition and supports safe fields, safe instance calls, `??`,
-and `!`. Instance calls are direct, with no virtual, abstract, or final-override
-functions.
+Structs do not inherit, implement interfaces, or provide arithmetic. They box
+when converted to `object`; `is Point` and `as Point?` perform exact box checks
+and copied unboxing. `Point?` otherwise remains an inline tagged value. A
+nullable struct tests presence in a condition and supports safe fields, safe
+instance calls, `??`, and `!`. Instance calls are direct, with no virtual,
+abstract, or final-override functions.
 
 Inline field cycles are rejected. A class or array reference breaks such a cycle
 because it does not embed the referenced value's layout.

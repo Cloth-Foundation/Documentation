@@ -22,9 +22,9 @@ The current contracts are:
 | --- | --- |
 | Shuttle manifest schema | 1 |
 | Shuttle compiler process protocol | 2 |
-| Compiler artifact format | 7 |
-| Compiler ABI | 6 |
-| Runtime ABI | 9 |
+| Compiler artifact format | 8 |
+| Compiler ABI | 7 |
+| Runtime ABI | 11 |
 | Build receipt schema | 1 |
 | Toolchain metadata schema | 1 |
 
@@ -32,8 +32,8 @@ These versions are independent. The process protocol describes communication
 between tools; the artifact and ABI versions describe the compiled data and code
 they exchange.
 
-Shuttle advertises and validates artifact format 7 through public capabilities
-and receipts. Runtime ABI 9 is compiler-owned metadata inside the opaque
+Shuttle advertises and validates artifact format 8 through public capabilities
+and receipts. Runtime ABI 11 is compiler-owned metadata inside the opaque
 artifact; `clothc` validates it during inspection, reuse, and linking.
 
 Rebuild older artifacts when moving to the current compiler/runtime contract.

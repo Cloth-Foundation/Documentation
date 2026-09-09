@@ -25,9 +25,9 @@ not numeric operands.
 
 ## References and absence
 
-References are non-null by default. Write `User?`, `string?`, or `int32[]?`
-to admit `null`. Nullable primitives, enums, and structs are not supported:
-`int32?`, `Status?`, and `Point?` are invalid.
+References are non-null by default. Append `?` to any value or reference type
+to admit absence: `User?`, `string?`, `int32?`, `Status?`, and `Point?` are all
+valid. Nullable values use tagged inline storage until converted to `object?`.
 
 For arrays, element and array nullability are separate:
 `User?[]` contains nullable users; `User[]?` is a nullable array of non-null
@@ -42,5 +42,6 @@ Unsuffixed numeric literals can adopt an expected type when representable.
 Suffixes such as `i8`, `u64`, and `f32` select an exact initial type instead.
 Existing numeric values widen implicitly only through specified lossless
 conversions. Reference widening follows class inheritance, declared interfaces,
-and `object`. Arrays remain invariant. See
+and `object`. Primitive, enum, and struct values box only when converted to
+`object` or `object?`. Arrays remain invariant. See
 [conversions](/docs/reference/language/casts).

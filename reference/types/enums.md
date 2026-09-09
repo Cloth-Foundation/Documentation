@@ -34,7 +34,8 @@ type; wildcard imports do not import bare cases.
 
 Assignment, arguments, returns, and equality require the same nominal enum type.
 `var` preserves that identity. Enums support `==` and `!=`, but no ordering,
-arithmetic, integer conversion, bitwise operations, truthiness, or boxing.
+arithmetic, integer conversion, bitwise operations, or truthiness. Enums box
+when converted to `object`.
 
 ## Initialization and storage
 
@@ -57,6 +58,10 @@ and `Status?[]` is a non-null array of nullable enum elements.
 Printing produces the qualified type and case name, such as
 `Status.running`. `current::typeName` returns the qualified enum type name.
 Import aliases do not change either result.
+
+An enum box retains the exact enum identity and case. `is Status` and
+`as Status?` can inspect and unbox it; another enum with the same case names is
+not compatible.
 
 Enums have a four-byte value representation. Internal tags follow declaration
 order and are not stable persistence identifiers or a source-level integer API.

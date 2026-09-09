@@ -78,6 +78,8 @@ integers.
 
 Struct comparison recursively uses each field's equality. Strings viewed as
 `object` use identity. Null is supported by nullable-reference equality.
+`Object.Equals` is a separate virtual operation; value boxes use exact payload
+equality and do not change the meaning of `==`.
 
 ## Logical and null operations
 
@@ -86,5 +88,5 @@ nullable reference for absence.
 
 `?.` safely reads a reference-valued field, `??` selects a lazy null fallback,
 and postfix `!` asserts presence. See [nullability](/docs/reference/language/nullable).
-`is` and `as` operate on runtime reference types; they are not numeric
-conversions.
+`is` and `as` operate on runtime object representations. Primitive, enum, and
+struct targets inspect exact boxes; they are not numeric conversions.

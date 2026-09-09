@@ -81,7 +81,9 @@ and interfaces widen to their parent interfaces. All managed references widen
 to `object`. Compatible nullable forms widen to nullable destinations.
 
 Arrays are invariant. `User[]` does not become `object[]`; it may widen as
-a whole to `object`. Primitives, enums, and structs do not box into `object`.
+a whole to `object`. Primitives, enums, and structs box when converted to
+`object`; normal locals, fields, parameters, results, and arrays retain unboxed
+value storage.
 
 ## Runtime type tests
 
@@ -92,6 +94,10 @@ string? text = value as string?;
 if (text != null) {
   println(text);
 }
+
+object count = 42;
+bool isInt32 = count is int32;
+int32? restored = count as int32?;
 ```
 
 `is T` requires a non-null runtime-checkable reference target. It returns
@@ -103,5 +109,6 @@ returns null on failure. `as T` with a non-null target is invalid.
 
 Checks follow class ancestry and declared interface conformance. Statically
 impossible conversions, such as between unrelated concrete class types, are
-rejected. Runtime checks targeting arrays are unsupported. Neither operator is
-a numeric, enum, or struct conversion.
+rejected. A primitive, enum, or struct target checks the exact boxed type and
+copies the payload on successful `as`; it never performs numeric widening or
+narrowing. Runtime checks targeting arrays are unsupported.

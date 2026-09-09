@@ -30,17 +30,20 @@ format placeholders. They return void. A local or member named `print` or
 | Integer | Base-10 digits, with a minus sign when negative |
 | Finite floating-point | Locale-independent shortest round-trippable decimal |
 | Special floating-point | `inf`, `-inf`, or `nan` |
-| Class instance | `<qualified.TypeName>` |
+| Class instance through `object` | Its virtual `ToString()` result |
 | Array | `<Array>` |
 | Enum | `qualified.TypeName.CaseName` |
-| Struct | `<qualified.TypeName>` |
+| Struct value | `<qualified.TypeName>` |
+| Boxed struct | `qualified.TypeName{Field=value, ...}` |
 | Null literal | `null` |
 
-Objects do not print addresses or field contents. Struct and enum printing does
-not box values. Import aliases do not change their qualified output names.
+The default class representation is `<qualified.TypeName>` and contains no
+address or hash. A class may override `ToString()`. Direct struct and enum
+printing does not box values. Import aliases do not change qualified output
+names.
 
-Narrow nullable references before passing them to non-null output overloads.
-The bare `null` literal has its own output support.
+Nullable object output prints `null` when absent and dynamically formats a
+present value. The bare `null` literal has its own output support.
 
 String bytes, including embedded zero bytes, are preserved. Native Windows output
 uses the same line-feed contract as other supported hosts.
