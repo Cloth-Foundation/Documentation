@@ -20,6 +20,12 @@ empty string for an empty line, and returns `null` at end of input. Redirected
 input is decoded as strict UTF-8; malformed input and host read failures throw
 `IoError`.
 
+`Console.WriteError(value)` writes a string to standard error without adding a
+line ending. `Console.WriteErrorLine(value)` writes the string followed by one
+line feed. Both are deterministic, flush before returning, and do not throw a
+recoverable Cloth error. They are suitable for diagnostics and progress that
+must remain separate from a program's ordinary output.
+
 ## Binary file input
 
 Import `cloth.io::File` and call `File.ReadBytes(path)` to read a regular file:
